@@ -6,14 +6,15 @@ export default class {
         this.url = url;
 
         this.data = false;
+        
         this.image = '';
         this.id = '';
     }
 
     getData() {
-        console.log('Chegou no data');
         // evita que a função seja chamada muitas vezes
         this.data = true;
+        console.log('Chegou no getData()');
 
         getPokemons.getPokemonData(this.url).then((res) => {
             this.data = res.data;
@@ -27,8 +28,14 @@ export default class {
     }
 
     getImage() {
-        if (this.data == '' && !this.data) this.getData();
+        if (!this.data) this.getData();
 
         return this.image;
+    }
+
+    getId() {
+        if (!this.data) this.getData();
+
+        return this.id;
     }
 }

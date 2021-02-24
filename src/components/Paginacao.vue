@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="paginacao">
     <b-pagination
       v-model="$parent.currentPage"
       :total-rows="$parent.rows"
@@ -16,4 +16,7 @@ export default {};
 </script>
 
 <style>
+#paginacao {
+  margin-top: 30px;
+}
 </style>

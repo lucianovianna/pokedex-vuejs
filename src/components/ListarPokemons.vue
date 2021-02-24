@@ -1,6 +1,9 @@
 <template>
   <div style="text-align: center">
-    <input-busca></input-busca>
+    <b-row align-h="center" align-v="center" id="filtragens">
+      <input-busca></input-busca>
+      <dropdown-ordenacao></dropdown-ordenacao>
+    </b-row>
 
     <div class="d-flex align-items-center" v-if="loading">
       <strong>Carregando...</strong>
@@ -20,7 +23,7 @@
           <p>{{ poke.nome | ucFirstWord }}</p>
         </b-col>
       </b-row>
-      <br />
+
       <paginacao></paginacao>
     </div>
   </div>
@@ -54,7 +57,10 @@ export default {
     return {
       pokemonsData: [],
       loading: true,
-      order: "asc",
+      ordem: {
+        order: "asc",
+        campo: ["nome"],
+      },
       busca: "",
       currentPage: 1,
       perPage: 5,
@@ -65,15 +71,7 @@ export default {
       return Math.ceil(this.pokemonsFiltrados.length / 3);
     },
     pokemonsOrdenados() {
-      return _.orderBy(this.pokemonsData, ["nome"], this.order);
-    },
-    pokemonsPorPagina() {
-      const pokemons = this.pokemonsFiltrados;
-
-      return pokemons.slice(
-        (this.currentPage - 1) * (this.perPage * 3),
-        this.currentPage * (this.perPage * 3)
-      );
+      return _.orderBy(this.pokemonsData, this.ordem.campo, this.ordem.order);
     },
     pokemonsFiltrados() {
       var self = this;
@@ -83,6 +81,14 @@ export default {
         return poke.nome.toLowerCase().indexOf(busca) >= 0;
       });
     },
+    pokemonsPorPagina() {
+      const pokemons = this.pokemonsFiltrados;
+
+      return pokemons.slice(
+        (this.currentPage - 1) * (this.perPage * 3),
+        this.currentPage * (this.perPage * 3)
+      );
+    },
   },
   methods: {},
 };
@@ -90,8 +96,7 @@ export default {
 
 
 <style>
-#inputBusca {
-  padding-inline: 15em;
+#filtragens {
   margin-bottom: 60px;
 }
 </style>
