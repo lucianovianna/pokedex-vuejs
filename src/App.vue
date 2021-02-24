@@ -1,6 +1,7 @@
 <template>
   <div id="app" class="container">
     <titulo></titulo>
+    <br />
     <listar-pokemons></listar-pokemons>
   </div>
 </template>

@@ -5,23 +5,27 @@ export default class {
         this.nome = nome;
         this.url = url;
 
-        this.data = '';
+        this.data = false;
         this.image = '';
     }
 
     getData() {
-        console.log('chegou no getData()');
+        console.log('Chegou no data');
+        // evita que a função seja chamada muitas vezes
+        this.data = true;
+
         getPokemons.getPokemonData(this.url).then((res) => {
             this.data = res.data;
         }).catch((err) => {
             console.log(err);
         }).then(() => {
+            /* Define os valores necessários */ 
             this.image = this.data.sprites.front_default;
         });
     }
 
     getImage() {
-        if (this.data == '') this.getData();
+        if (this.data == '' && !this.data) this.getData();
 
         return this.image;
     }

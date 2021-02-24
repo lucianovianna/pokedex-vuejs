@@ -1,5 +1,13 @@
 <template>
   <div style="text-align: center">
+    <!-- <b-input-group id="inputBusca">
+      <b-icon icon="search"></b-icon>
+      <b-form-input v-model="busca" placeholder="Filtrar Pokemons" type="search"></b-form-input>
+      <b-button variant="outline-secondary" @click="busca = ''">X</b-button>
+    </b-input-group> -->
+
+    <input-busca></input-busca>
+
     <div class="d-flex align-items-center" v-if="loading">
       <strong>Carregando...</strong>
       <b-spinner class="ml-auto"></b-spinner>
@@ -7,7 +15,7 @@
 
     <div v-else>
       <b-row id="pokeList">
-        <b-col sm="4" md="4" v-for="(poke, i) in pokemonsFiltrados" :key="i">
+        <b-col sm="4" md="4" v-for="(poke, i) in pokemonsPorPagina" :key="i">
           <b-overlay
             :show="poke.image == '' ? true : false"
             rounded="circle"
@@ -69,10 +77,22 @@ export default {
   },
   computed: {
     rows() {
-      return this.pokemonsData.length / 3;
+      if (this.busca != "") {
+        return Math.ceil(this.pokemonsFiltrados.length / 3);
+      } else {
+        return Math.ceil(this.pokemonsData.length / 3);
+      }
     },
     pokemonsOrdenados() {
       return _.orderBy(this.pokemonsData, ["nome"], this.order);
+    },
+    pokemonsPorPagina() {
+      const pokemons = this.pokemonsFiltrados;
+
+      return pokemons.slice(
+        (this.currentPage - 1) * (this.perPage * 3),
+        this.currentPage * (this.perPage * 3)
+      );
     },
     pokemonsFiltrados() {
       var self = this;
@@ -80,12 +100,17 @@ export default {
       return _.filter(this.pokemonsOrdenados, function (poke) {
         let busca = self.busca.toLowerCase();
         return poke.nome.toLowerCase().indexOf(busca) >= 0;
-      }).slice(
-        (this.currentPage - 1) * (this.perPage * 3),
-        this.currentPage * (this.perPage * 3)
-      );
+      });
     },
   },
   methods: {},
 };
 </script>
+
+
+<style>
+#inputBusca {
+  padding-inline: 15em;
+  margin-bottom: 60px;
+}
+</style>
