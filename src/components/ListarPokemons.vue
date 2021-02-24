@@ -71,23 +71,25 @@ export default {
     Rows() {
       return this.pokemonsData.length / 3;
     },
-    currentPokemons(pokeData) {
-      return pokeData.slice(
-        (this.currentPage - 1) * (this.perPage * 3),
-        this.currentPage * (this.perPage * 3)
-      );
-    },
+    // currentPokemons(pokeData) {
+    //   return pokeData.slice(
+    //     (this.currentPage - 1) * (this.perPage * 3),
+    //     this.currentPage * (this.perPage * 3)
+    //   );
+    // },
     pokemonsOrdenados() {
       return _.orderBy(this.pokemonsData, ["nome"], this.order);
     },
     pokemonsFiltrados() {
       var self = this;
-      // var pokemons = [];
 
       return _.filter(this.pokemonsOrdenados, function (poke) {
         let busca = self.busca.toLowerCase();
-        return (poke.nome.toLowerCase().indexOf(busca) >= 0);
-      });
+        return poke.nome.toLowerCase().indexOf(busca) >= 0;
+      }).slice(
+        (this.currentPage - 1) * (this.perPage * 3),
+        this.currentPage * (this.perPage * 3)
+      );
     },
   },
   methods: {},
