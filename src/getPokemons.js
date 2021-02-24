@@ -1,13 +1,3 @@
-// import Pokedex from 'pokedex-promise-v2'
-
-// const P = new Pokedex();
-
-// // var interval = {
-// //     limit: 20,
-// //     offset: 0
-// // };
-// export default P.getPokemonsList();
-
 import axios from 'axios';
 // import Pokemon from './pokemon';
 

@@ -5,17 +5,8 @@ export default class {
         this.nome = nome;
         this.url = url;
 
-        this.data = false;
-        this.image = false;
-
-        // getPokemons.getPokemonData(this.url).then((res) => {
-        //     this.data = res.data;
-        //     // console.log(res.data);
-        // }).catch((err) => {
-        //     console.log(err);
-        // }).then(() => {
-        //     this.image = this.data.sprites.front_default;
-        // });
+        this.data = '';
+        this.image = '';
     }
 
     getData() {
@@ -30,7 +21,7 @@ export default class {
     }
 
     getImage() {
-        if (!this.data) this.getData();
+        if (this.data == '') this.getData();
 
         return this.image;
     }

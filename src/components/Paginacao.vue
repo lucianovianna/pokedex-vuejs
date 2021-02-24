@@ -13,13 +13,7 @@
 
 <script>
 export default {
-  props: ["rows"],
-  data() {
-    return {
-      currentPage: 1,
-      perPage: 6,
-    };
-  },
+  props: ["rows", "perPage", "currentPage"],
 };
 </script>
 

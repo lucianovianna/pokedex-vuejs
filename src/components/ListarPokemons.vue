@@ -6,15 +6,15 @@
     </div>
 
     <div v-else>
-      <!-- <b-row id="pokeList">
-        <b-col sm="4" md="4" v-for="(poke, i) in currentPokemons" :key="i">
-          <b-img :src="poke.image" srcset="" rounded="circle" thumbnail></b-img>
-          <p>{{ poke.nome | ucFirstWord }}</p>
-        </b-col>
-      </b-row> -->
       <b-row id="pokeList">
         <b-col sm="4" md="4" v-for="(poke, i) in pokemonsFiltrados" :key="i">
-          <b-img :src="poke.image" srcset="" rounded="circle" thumbnail></b-img>
+          <b-overlay
+            :show="poke.image == '' ? true : false"
+            rounded="circle"
+            variant="white"
+          >
+            <b-img :src="poke.getImage()" rounded="circle" thumbnail></b-img>
+          </b-overlay>
           <p>{{ poke.nome | ucFirstWord }}</p>
         </b-col>
       </b-row>
@@ -22,12 +22,12 @@
       <div>
         <b-pagination
           v-model="currentPage"
-          :total-rows="Rows"
+          :total-rows="rows"
           :per-page="perPage"
           aria-controls="pokeList"
           align="center"
         ></b-pagination>
-        <span>Rows: {{ Rows }}</span>
+        <span>Linhas: {{ rows }}</span>
       </div>
     </div>
   </div>
@@ -68,15 +68,9 @@ export default {
     };
   },
   computed: {
-    Rows() {
+    rows() {
       return this.pokemonsData.length / 3;
     },
-    // currentPokemons(pokeData) {
-    //   return pokeData.slice(
-    //     (this.currentPage - 1) * (this.perPage * 3),
-    //     this.currentPage * (this.perPage * 3)
-    //   );
-    // },
     pokemonsOrdenados() {
       return _.orderBy(this.pokemonsData, ["nome"], this.order);
     },
