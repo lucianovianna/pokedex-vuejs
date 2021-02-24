@@ -37,7 +37,7 @@ export default {
         console.log(error);
       })
       .then(() => {
-        this.loading = false;
+        setTimeout(() => (this.loading = false), 150);
       });
   },
 
