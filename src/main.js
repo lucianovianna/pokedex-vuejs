@@ -6,7 +6,8 @@ import { BootstrapVue, IconsPlugin } from 'bootstrap-vue';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 
-import Teste1 from './components/Teste1.vue';
+import Titulo from './components/Titulo.vue';
+import ListarPokemons from './components/ListarPokemons.vue';
 import Paginacao from './components/Paginacao.vue';
 
 // Make BootstrapVue available throughout your project
@@ -16,7 +17,10 @@ Vue.use(IconsPlugin);
 
 Vue.config.productionTip = false;
 
-Vue.component('teste-1', Teste1);
+Vue.filter('ucFirstWord', (val) => val.charAt(0).toUpperCase() + val.slice(1));
+
+Vue.component('titulo', Titulo);
+Vue.component('listar-pokemons', ListarPokemons);
 Vue.component('paginacao', Paginacao);
 
 

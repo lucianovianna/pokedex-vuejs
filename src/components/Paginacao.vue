@@ -1,25 +1,23 @@
 <template>
-  <div class="overflow-auto">
-    <div>
-      <h6>Goto first button number</h6>
-      <b-pagination
-        v-model="currentPage"
-        :total-rows="rows"
-        :per-page="perPage"
-        first-number
-      ></b-pagination>
-    </div>
+  <div>
+    <b-pagination
+      v-model="currentPage"
+      :total-rows="rows"
+      :per-page="perPage"
+      aria-controls="pokeList"
+      align="center"
+    ></b-pagination>
+    <span>Linhas: {{ rows }}</span>
   </div>
 </template>
 
 <script>
 export default {
-  props: [rows],
+  props: ["rows"],
   data() {
     return {
-      rows: rows,
       currentPage: 1,
-			perPage: 5,
+      perPage: 6,
     };
   },
 };
