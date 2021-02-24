@@ -22,6 +22,6 @@ export default {};
 
 <style>
 #titulo {
-  margin-bottom: 30px;
+  margin-bottom: 60px;
 }
 </style>

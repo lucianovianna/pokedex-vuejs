@@ -11,19 +11,7 @@
     </div>
 
     <div v-else>
-      <b-row id="pokeList">
-        <b-col sm="4" md="4" v-for="(poke, i) in pokemonsPorPagina" :key="i">
-          <b-overlay
-            :show="poke.image == '' ? true : false"
-            rounded="circle"
-            variant="white"
-          >
-            <b-img :src="poke.getImage()" rounded="circle" thumbnail></b-img>
-          </b-overlay>
-          <p>{{ poke.nome | ucFirstWord }}</p>
-        </b-col>
-      </b-row>
-
+      <body-lista-pokemons></body-lista-pokemons>
       <paginacao></paginacao>
     </div>
   </div>

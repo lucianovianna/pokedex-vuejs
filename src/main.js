@@ -10,6 +10,7 @@ import Titulo from './components/Titulo.vue';
 import InputBusca from './components/InputBusca.vue';
 import DropdownOrdenacao from './components/DropdownOrdenacao.vue';
 import ListarPokemons from './components/ListarPokemons.vue';
+import BodyListaPokemons from './components/BodyListaPokemons.vue';
 import Paginacao from './components/Paginacao.vue';
 
 // Make BootstrapVue available throughout your project
@@ -25,9 +26,25 @@ Vue.component('titulo', Titulo);
 Vue.component('input-busca', InputBusca);
 Vue.component('dropdown-ordenacao', DropdownOrdenacao);
 Vue.component('listar-pokemons', ListarPokemons);
+Vue.component('body-lista-pokemons', BodyListaPokemons);
 Vue.component('paginacao', Paginacao);
 
+// const routes = {
+//   '/': Home,
+//   'pokemon/$id': Pokemon
+// }
 
 new Vue({
+  // data: {
+  //   currentRoute: window.location.pathname
+  // },
+  // computed: {
+  //   ViewComponent () {
+  //     const matchingView = routes[this.currentRoute]
+  //     return matchingView
+  //       ? require('./pages/' + matchingView + '.vue')
+  //       : require('./pages/404.vue')
+  //   }
+  // },
   render: h => h(App),
 }).$mount('#app')
