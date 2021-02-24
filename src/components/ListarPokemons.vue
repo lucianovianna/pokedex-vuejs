@@ -13,7 +13,7 @@
         </b-col>
       </b-row> -->
       <b-row id="pokeList">
-        <b-col sm="4" md="4" v-for="(poke, i) in currentPokemons" :key="i">
+        <b-col sm="4" md="4" v-for="(poke, i) in pokemonsFiltrados" :key="i">
           <b-img :src="poke.image" srcset="" rounded="circle" thumbnail></b-img>
           <p>{{ poke.nome | ucFirstWord }}</p>
         </b-col>
@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import _ from "lodash";
 import Pokemons from "../getPokemons";
 import Pokemon from "../pokemon";
 
@@ -58,22 +59,35 @@ export default {
 
   data() {
     return {
-      nextPrev: {},
       pokemonsData: [],
       loading: true,
+      order: "asc",
+      busca: "",
       currentPage: 1,
-      perPage: 6,
+      perPage: 5,
     };
   },
   computed: {
     Rows() {
       return this.pokemonsData.length / 3;
     },
-    currentPokemons() {
-      return this.pokemonsData.slice(
+    currentPokemons(pokeData) {
+      return pokeData.slice(
         (this.currentPage - 1) * (this.perPage * 3),
         this.currentPage * (this.perPage * 3)
       );
+    },
+    pokemonsOrdenados() {
+      return _.orderBy(this.pokemonsData, ["nome"], this.order);
+    },
+    pokemonsFiltrados() {
+      var self = this;
+      // var pokemons = [];
+
+      return _.filter(this.pokemonsOrdenados, function (poke) {
+        let busca = self.busca.toLowerCase();
+        return (poke.nome.toLowerCase().indexOf(busca) >= 0);
+      });
     },
   },
   methods: {},

@@ -26,7 +26,7 @@ export default class {
             console.log(err);
         }).then(() => {
             this.image = this.data.sprites.front_default;
-        })5
+        });
     }
 
     getImage() {
