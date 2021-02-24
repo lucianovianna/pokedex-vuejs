@@ -1,22 +1,19 @@
 <template>
   <div>
     <b-pagination
-      v-model="currentPage"
-      :total-rows="rows"
-      :per-page="perPage"
+      v-model="$parent.currentPage"
+      :total-rows="$parent.rows"
+      :per-page="$parent.perPage"
       aria-controls="pokeList"
       align="center"
     ></b-pagination>
-    <span>Linhas: {{ rows }}</span>
+    <span>Linhas: {{ $parent.rows }}</span>
   </div>
 </template>
 
 <script>
-export default {
-  props: ["rows", "perPage", "currentPage"],
-};
+export default {};
 </script>
 
 <style>
-/*  */
 </style>

@@ -7,6 +7,7 @@ export default class {
 
         this.data = false;
         this.image = '';
+        this.id = '';
     }
 
     getData() {
@@ -21,6 +22,7 @@ export default class {
         }).then(() => {
             /* Define os valores necessários */ 
             this.image = this.data.sprites.front_default;
+            this.id = this.data.id;
         });
     }
 

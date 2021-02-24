@@ -1,11 +1,5 @@
 <template>
   <div style="text-align: center">
-    <!-- <b-input-group id="inputBusca">
-      <b-icon icon="search"></b-icon>
-      <b-form-input v-model="busca" placeholder="Filtrar Pokemons" type="search"></b-form-input>
-      <b-button variant="outline-secondary" @click="busca = ''">X</b-button>
-    </b-input-group> -->
-
     <input-busca></input-busca>
 
     <div class="d-flex align-items-center" v-if="loading">
@@ -27,16 +21,7 @@
         </b-col>
       </b-row>
       <br />
-      <div>
-        <b-pagination
-          v-model="currentPage"
-          :total-rows="rows"
-          :per-page="perPage"
-          aria-controls="pokeList"
-          align="center"
-        ></b-pagination>
-        <span>Linhas: {{ rows }}</span>
-      </div>
+      <paginacao></paginacao>
     </div>
   </div>
 </template>
@@ -77,11 +62,7 @@ export default {
   },
   computed: {
     rows() {
-      if (this.busca != "") {
-        return Math.ceil(this.pokemonsFiltrados.length / 3);
-      } else {
-        return Math.ceil(this.pokemonsData.length / 3);
-      }
+      return Math.ceil(this.pokemonsFiltrados.length / 3);
     },
     pokemonsOrdenados() {
       return _.orderBy(this.pokemonsData, ["nome"], this.order);
