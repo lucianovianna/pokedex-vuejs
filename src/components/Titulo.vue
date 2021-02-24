@@ -2,7 +2,7 @@
   <div id="titulo">
     <!-- Image and text -->
     <b-navbar variant="faded" type="light">
-      <b-navbar-brand href="#">
+      <b-navbar-brand href="/">
         <b-img
           src="https://spng.pngfind.com/pngs/s/103-1032129_pokeball-pokeball-sprite-hd-png-download.png"
           class="d-inline-block align-top"
