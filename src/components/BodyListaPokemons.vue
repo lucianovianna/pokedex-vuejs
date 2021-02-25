@@ -13,15 +13,9 @@
           variant="white"
         >
           <router-link
-            :to="{
-              name: 'Pokemon',
-              params: {
-                pokeId: poke.getId(),
-                pokeData: poke,
-              },
-            }"
+            :to="{ name: 'Pokemon', params: { pokeId: poke.getId() } }"
           >
-            <b-img :src="poke.getImage()" rounded="circle" thumbnail></b-img>
+            <b-img  :src="poke.getImage()" rounded="circle" thumbnail></b-img>
             <p>{{ poke.nome | ucFirstWord }}</p>
           </router-link>
         </b-overlay>

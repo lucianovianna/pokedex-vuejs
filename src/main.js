@@ -30,11 +30,6 @@ Vue.component('listar-pokemons', ListarPokemons);
 Vue.component('body-lista-pokemons', BodyListaPokemons);
 Vue.component('paginacao', Paginacao);
 
-// const routes = {
-//   '/': Home,
-//   'pokemon/$id': Pokemon
-// }
-
 new Vue({
   router,
   render: h => h(App)

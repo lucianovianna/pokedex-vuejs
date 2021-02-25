@@ -4,6 +4,7 @@ import axios from 'axios';
 var url = 'https://pokeapi.co/api/v2/pokemon/';
 
 export default {
-    getPokemonsList: (limit = 81, offset = 0) => axios.get(url, { params: { limit, offset } }),
-    getPokemonData: (pokeUrl) => axios.get(pokeUrl),
+    getPokemonsList: (limit = 10000, offset = 0) => axios.get(url, { params: { limit, offset } }),
+    getPokemonDataByUrl: (pokeUrl) => axios.get(pokeUrl),
+    getPokemonData: (pokeInfo) => axios.get(url + `${pokeInfo}`),
 };

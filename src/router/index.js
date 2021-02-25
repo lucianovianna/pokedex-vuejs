@@ -21,10 +21,7 @@ const routes = [
   {
     path: '/pokemon/:pokeId',
     name: 'Pokemon',
-    props: {
-      header: true,
-      content: true
-    },
+    props: true,
     component: () => import('../views/Pokemon.vue')
   }
 ]

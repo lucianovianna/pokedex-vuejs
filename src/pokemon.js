@@ -16,7 +16,7 @@ export default class {
         this.data = true;
         console.log('Chegou no getData()');
 
-        getPokemons.getPokemonData(this.url).then((res) => {
+        getPokemons.getPokemonDataByUrl(this.url).then((res) => {
             this.data = res.data;
         }).catch((err) => {
             console.log(err);
