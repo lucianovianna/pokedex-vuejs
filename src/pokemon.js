@@ -8,7 +8,7 @@ export default class {
         this.data = false;
         
         this.image = '';
-        this.id = '';
+        this.id = 0;
     }
 
     getData() {

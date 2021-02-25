@@ -18,11 +18,15 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   },
-  // {
-  //   path: '/pokemon/:id',
-  //   name: 'Pokemon',
-  //   component: () => import('../views/Pokemon.vue')
-  // }
+  {
+    path: '/pokemon/:pokeId',
+    name: 'Pokemon',
+    props: {
+      header: true,
+      content: true
+    },
+    component: () => import('../views/Pokemon.vue')
+  }
 ]
 
 const router = new VueRouter({
