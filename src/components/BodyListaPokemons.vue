@@ -1,9 +1,8 @@
 <template>
-  <div>
-    <b-row id="pokeList">
+  <div class="">
+    <b-row id="pokeList" class="" align-h="around">
       <b-col
         sm="4"
-        md="4"
         class="mb-5"
         v-for="(poke, i) in $parent.pokemonsPorPagina"
         :key="i"
@@ -26,7 +25,7 @@
                 <b-img
                   :src="poke.getImage()"
                   rounded="circle"
-                  class="m-3"
+                  class="my-3"
                   thumbnail
                 ></b-img>
                 <p>{{ poke.nome | ucFirstWord }}</p>
@@ -35,7 +34,7 @@
             <b-card-body class="mt-n3">
               <span
                 v-for="type in poke.data.types"
-                :key="type"
+                :key="type.type.slot"
                 class="mx-2 px-2 py-1 border"
               >
                 {{ type.type.name | ucFirstWord }}
@@ -49,11 +48,7 @@
 </template>
 
 <script>
-export default {
-  updated() {
-    console.log(this.$parent.pokemonsPorPagina);
-  },
-};
+export default {};
 </script>
 
 <style>

@@ -5,92 +5,83 @@
     variant="white"
   >
     <div class="container">
-      <h1>{{ pokeData.name || "" | ucFirstWord }}</h1>
+      <h1>
+        {{ pokeData.name || "" | ucFirstWord }}
+        <span class="text-secondary">#{{ pokeData.id }}</span>
+      </h1>
       <hr />
 
       <div class="pokeInfo">
-        <b-row align-h="around" align-v="around">
+        <div>
           <b-card
             no-body
-            class="overflow-hidden mb-3"
-            style="max-width: 475px"
+            class="overflow-hidden mb-5"
+            style="max-width: 950px; max-height: 500px"
             align="center"
           >
-            <b-card-img
-              :src="getImage"
-              :alt="pokeData.name || '' | ucFirstWord"
-              class="border-bottom"
-            ></b-card-img>
-            <b-card-body>
-              <div>
-                <b-row class="labelPokeInfo">
-                  <b-col>Height</b-col>
-                  <b-col>Category</b-col>
-                </b-row>
-                <b-row class="dataPokeInfo">
-                  <b-col>{{ pokeData.height }}</b-col>
-                  <b-col>X</b-col>
-                </b-row>
-                <!--  -->
-                <b-row class="labelPokeInfo">
-                  <b-col>Weight</b-col>
-                  <b-col>Gender</b-col>
-                </b-row>
-                <b-row class="dataPokeInfo">
-                  <b-col>{{ pokeData.weight }}</b-col>
-                  <b-col>X</b-col>
-                </b-row>
-              </div>
-            </b-card-body>
+            <b-row no-gutters>
+              <b-col md="6">
+                <b-card-img
+                  :src="getImage"
+                  :alt="pokeData.name || '' | ucFirstWord"
+                  class="rounded-0"
+                ></b-card-img>
+              </b-col>
+              <b-col md="6">
+                <b-card-body
+                  v-if="loadedDada"
+                  class="border-left"
+                  title="Status"
+                >
+                  <div>
+                    <b-row>
+                      <b-col>
+                        <chart :chartData="pokeData.stats"></chart>
+                      </b-col>
+                    </b-row>
+                  </div>
+                </b-card-body>
+              </b-col>
+            </b-row>
           </b-card>
+        </div>
 
-          <div>
-            <!-- CHART -->
-            <div v-if="loadedDada">
-              <b-row>
-                <b-col class="labelPokeInfo mb-2 mt-2">Stats</b-col>
-              </b-row>
-              <b-row>
-                <b-col> <chart :chartData="pokeData.stats"></chart> </b-col>
-              </b-row>
-            </div>
-            <br />
+        <div>
+          <b-row class="labelPokeInfo">
+            <b-col>Height</b-col>
+            <b-col>Weight</b-col>
+          </b-row>
+          <b-row class="dataPokeInfo">
+            <b-col>{{ pokeData.height }}</b-col>
+            <b-col>{{ pokeData.weight }}</b-col>
+          </b-row>
 
-            <b-row>
-              <b-col class="labelPokeInfo mt-2">Type</b-col>
-            </b-row>
-            <b-row>
-              <b-col
-                v-for="(type, i) in getTypes"
-                :key="i"
-                class="mx-2 my-4 px-2 py-1 border"
-              >
-                {{ type.type.name | ucFirstWord }}
-              </b-col>
-            </b-row>
+          <b-row class="labelPokeInfo">
+            <b-col class="mt-2">Type</b-col>
+          </b-row>
+          <b-row class="dataPokeInfo">
+            <b-col
+              v-for="(type, i) in getTypes"
+              :key="i"
+              class="mx-2 my-4 px-2 py-1 border"
+            >
+              {{ type.type.name | ucFirstWord }}
+            </b-col>
+          </b-row>
 
-            <b-row>
-              <b-col class="labelPokeInfo">Weakenesses</b-col>
-            </b-row>
-            <b-row>
-              <b-col class="mx-2 my-4 px-2 py-1 border">X</b-col>
-            </b-row>
-
-            <b-row>
-              <b-col class="labelPokeInfo">Abilities</b-col>
-            </b-row>
-            <b-row>
-              <b-col
-                v-for="(ability, i) in getAbilities"
-                :key="i"
-                class="mx-2 my-4 px-2 py-1 border"
-              >
-                {{ ability.ability.name | ucFirstWord }}
-              </b-col>
-            </b-row>
-          </div>
-          <!--  -->
-        </b-row>
+          <b-row>
+            <b-col class="labelPokeInfo">Abilities</b-col>
+          </b-row>
+          <b-row>
+            <b-col
+              v-for="(ability, i) in getAbilities"
+              :key="i"
+              class="mx-2 my-4 px-auto py-1 border"
+            >
+              {{ ability.ability.name | ucFirstWord }}
+            </b-col>
+          </b-row>
+        </div>
       </div>
     </div>
   </b-overlay>
