@@ -1,16 +1,16 @@
 <template>
   <div class="">
-    <b-row id="pokeList" class="" align-h="around">
+    <b-row id="pokeList">
       <b-col
         sm="4"
-        class="mb-5"
+        class="d-flex justify-content-around"
         v-for="(poke, i) in $parent.pokemonsPorPagina"
         :key="i"
       >
         <b-card
           no-body
-          class="overflow-hidden mb-3"
-          style="max-width: 250px"
+          class="overflow-hidden mb-5"
+          style="width: 250px"
           align="center"
         >
           <b-overlay
