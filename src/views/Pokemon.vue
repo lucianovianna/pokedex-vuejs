@@ -5,10 +5,29 @@
     variant="white"
   >
     <div class="container">
-      <h1>
-        {{ pokeData.name || "" | ucFirstWord }}
-        <span class="text-secondary">#{{ pokeData.id }}</span>
-      </h1>
+      <b-row class="mt-3">
+        <router-link
+          :to="{ name: 'Pokemon', params: { pokeId: Number(pokeId) - 1 } }"
+        >
+          <b-col
+            ><h2><b-icon-arrow-left></b-icon-arrow-left></h2
+          ></b-col>
+        </router-link>
+        <b-col>
+          <h1>
+            {{ pokeData.name || "" | ucFirstWord }}
+            <span class="text-secondary">#{{ pokeData.id }}</span>
+          </h1>
+        </b-col>
+        <router-link
+          :to="{ name: 'Pokemon', params: { pokeId: Number(pokeId) + 1 } }"
+        >
+          <b-col>
+            <h2><b-icon-arrow-right></b-icon-arrow-right></h2>
+          </b-col>
+        </router-link>
+      </b-row>
+
       <hr />
 
       <div class="pokeInfo">
@@ -83,6 +102,19 @@
           </b-row>
         </div>
       </div>
+      <div>
+        <h3 class="mb-4">Evolution Chain</h3>
+        <b-row v-if="evoChain != false" class="mb-5">
+          <b-col v-for="(chain, i) in evoChain" :key="i">
+            <b-img
+              :src="getImageEvos(chain)"
+              rounded="circle"
+              thumbnail
+            ></b-img>
+            <span>{{ chain | ucFirstWord }}</span>
+          </b-col>
+        </b-row>
+      </div>
     </div>
   </b-overlay>
 </template>
@@ -95,21 +127,22 @@ export default {
   components: { Chart },
   props: ["pokeId"],
   created() {
-    getPokemons
-      .getPokemonData(this.pokeId)
-      .then((res) => {
-        console.log(res.data);
-        return (this.pokeData = res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .then(() => setTimeout(() => (this.loadedDada = true), 300));
+    this.getPokemonData();
   },
+  updated() {
+    // this.getPokemonData();
+  },
+//   beforeRouteUpdate (to, from, next) {
+//   // this.getPokemonData();
+//   // this.name = to.params.name
+//   // next();
+// },
   data() {
     return {
       pokeData: [],
       loadedDada: false,
+      evoChain: false,
+      evosImage: [],
     };
   },
   computed: {
@@ -128,6 +161,76 @@ export default {
     },
     getAbilities() {
       return this.pokeData.abilities;
+    },
+  },
+  methods: {
+    getPokemonData() {
+      getPokemons
+      .getPokemonData(this.pokeId)
+      .then((res) => {
+        console.log(res.data);
+        return (this.pokeData = res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .then(() =>
+        setTimeout(() => {
+          this.loadedDada = true;
+          this.getEvoChain(this.pokeId);
+        }, 300)
+      );
+    },
+    getEvoChain(id, token = 50) {
+      if (token != 0) {
+        console.log("chegou no getEvoChain(id)");
+
+        var evoData;
+        var evoChain = [];
+
+        getPokemons
+          .getEvolutionChain(id)
+          .then((res) => {
+            // console.log(res.data.chain);
+            evoData = res.data.chain;
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+          .then(() => {
+            do {
+              evoChain.push(evoData.species.name);
+              evoData = evoData.evolves_to[0];
+            } while (
+              evoData != undefined &&
+              Object.prototype.hasOwnProperty.call(evoData, "evolves_to")
+            );
+
+            if (evoChain.includes(this.pokeData.name)) {
+              this.evoChain = evoChain;
+            } else {
+              this.getEvoChain(id - 1, token);
+            }
+          });
+      }
+    },
+    getImageEvos(evoName) {
+      var data;
+      getPokemons
+        .getPokemonData(evoName)
+        .then((res) => {
+          // console.log("getimageevos()", res.data);
+          data = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .then(() => {
+          let imageUrl =
+            data.sprites.other["official-artwork"].front_default ||
+            data.sprites.front_default;
+          return imageUrl;
+        });
     },
   },
 };

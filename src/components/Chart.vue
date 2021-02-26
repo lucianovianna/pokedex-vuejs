@@ -11,7 +11,7 @@ export default {
     this.setData();
   },
   mounted() {
-    console.log("data no mounted:", this.data);
+    // console.log("data no mounted:", this.data);
     this.renderChart(this.data, this.options);
   },
   data() {
@@ -50,7 +50,7 @@ export default {
           this.data.datasets[0].data.push(this.chartData[`${i}`].base_stat);
         }
       }
-      console.log("setData()", this.data);
+      // console.log("setData()", this.data);
     },
   },
 };

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <titulo></titulo>
-    <listar-pokemons></listar-pokemons>
+    <titulo />
+    <listar-pokemons />
   </div>
 </template>
 
