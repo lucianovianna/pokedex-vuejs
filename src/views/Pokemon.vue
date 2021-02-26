@@ -6,12 +6,13 @@
   >
     <div class="container">
       <h1>{{ pokeData.name || "" | ucFirstWord }}</h1>
+      <hr />
 
       <div class="pokeInfo">
-        <b-row align-h="around">
+        <b-row align-h="around" align-v="around">
           <b-card
             no-body
-            class="overflow-hidden"
+            class="overflow-hidden mb-3"
             style="max-width: 475px"
             align="center"
           >
@@ -44,8 +45,19 @@
           </b-card>
 
           <div>
+            <!-- CHART -->
+            <div v-if="loadedDada">
+              <b-row>
+                <b-col class="labelPokeInfo mb-2 mt-2">Stats</b-col>
+              </b-row>
+              <b-row>
+                <b-col> <chart :chartData="pokeData.stats"></chart> </b-col>
+              </b-row>
+            </div>
+            <br />
+
             <b-row>
-              <b-col class="labelPokeInfo">Type</b-col>
+              <b-col class="labelPokeInfo mt-2">Type</b-col>
             </b-row>
             <b-row>
               <b-col
@@ -57,14 +69,14 @@
               </b-col>
             </b-row>
 
-            <b-row> 
-              <b-col class="labelPokeInfo">Weakenesses</b-col>  
+            <b-row>
+              <b-col class="labelPokeInfo">Weakenesses</b-col>
             </b-row>
             <b-row>
               <b-col class="mx-2 my-4 px-2 py-1 border">X</b-col>
             </b-row>
 
-            <b-row> 
+            <b-row>
               <b-col class="labelPokeInfo">Abilities</b-col>
             </b-row>
             <b-row>
@@ -85,9 +97,11 @@
 </template>
 
 <script>
+import Chart from "../components/Chart.vue";
 import getPokemons from "../getPokemons";
 
 export default {
+  components: { Chart },
   props: ["pokeId"],
   created() {
     getPokemons
@@ -98,11 +112,13 @@ export default {
       })
       .catch((err) => {
         console.log(err);
-      });
+      })
+      .then(() => setTimeout(() => (this.loadedDada = true), 300));
   },
   data() {
     return {
       pokeData: [],
+      loadedDada: false,
     };
   },
   computed: {
@@ -122,15 +138,6 @@ export default {
     getAbilities() {
       return this.pokeData.abilities;
     },
-    // getHeight() {
-    //   return this.pokeData.height;
-    // },
-    // getWeight() {
-    //   return this.pokeData.weight;
-    // },
-    // getCategory() {
-    //   return this.pokeData.category;
-    // },
   },
 };
 </script>
