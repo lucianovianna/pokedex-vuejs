@@ -11,16 +11,16 @@
     </div>
 
     <div v-else>
-      <body-lista-pokemons></body-lista-pokemons>
-      <paginacao></paginacao>
+      <body-lista-pokemons :pokemons="pokemonsPorPagina" />
+      <paginacao />
     </div>
   </div>
 </template>
 
 <script>
+
 import _ from "lodash";
-import Pokemons from "../getPokemons";
-import Pokemon from "../pokemon";
+import PokemonsService from "@/services/PokemonsService.js";
 
 export default {
   name: 'ListarPokemons',
@@ -33,61 +33,88 @@ export default {
   },
 
   created() {
-    Pokemons.getPokemonsList()
-      .then((res) => {
-        var data = res.data.results;
-        // console.log(data);
-
-        for (let i in data) {
-          this.pokemonsData.push(new Pokemon(data[i].name, data[i].url));
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .then(() => {
-        setTimeout(() => (this.loading = false), 150);
-      });
+    this.getPokemonsList();
   },
 
   data() {
     return {
-      pokemonsData: [],
-      loading: true,
+      pokemonsList: [],
+      loading: false,
       ordem: {
         order: "asc",
         campo: ["nome"],
       },
       busca: "",
       currentPage: 1,
-      perPage: 5,
     };
   },
+
   computed: {
     rows() {
       return Math.ceil(this.pokemonsFiltrados.length / 3);
     },
     pokemonsOrdenados() {
-      return _.orderBy(this.pokemonsData, this.ordem.campo, this.ordem.order);
+      let ordenados = _.orderBy(this.pokemonsList, this.ordem.campo, this.ordem.order);
+      // console.log("Ordenados: ", JSON.parse(JSON.stringify(ordenados)));
+      return ordenados;
     },
     pokemonsFiltrados() {
       var self = this;
-
-      return _.filter(this.pokemonsOrdenados, function (poke) {
+      return _.filter(this.pokemonsOrdenados, (poke) => {
         let busca = self.busca.toLowerCase();
-        return poke.nome.toLowerCase().indexOf(busca) >= 0;
+        return poke.name.toLowerCase().indexOf(busca) >= 0;
       });
     },
     pokemonsPorPagina() {
-      const pokemons = this.pokemonsFiltrados;
+      const perPage = 15;
 
-      return pokemons.slice(
-        (this.currentPage - 1) * (this.perPage * 3),
-        this.currentPage * (this.perPage * 3)
+      let pokemons = this.pokemonsFiltrados.slice(
+        (this.currentPage - 1) * perPage,
+        this.currentPage * perPage
       );
-    },
+
+      console.log("pokemonsPorPagina: " , this.setPokemonsData(pokemons));
+      return this.setPokemonsData(pokemons);
+    }
   },
-  methods: {},
+
+  methods: {
+    getPokemonsList() {
+      this.loading = true;
+
+      PokemonsService.getPokemonsList()
+        .then((res) => {
+          this.pokemonsList = res.data.results;
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+    setPokemonsData(pokemonsList) {
+      let newPokemonList = [];
+
+      pokemonsList.forEach(async poke => {
+        await PokemonsService.getPokemonDataByUrl(poke.url)
+          .then((res) => {
+            var pokeData = res.data;
+
+            newPokemonList.push({
+              ...poke,
+              image: pokeData.sprites.front_default,
+              id: pokeData.id,
+              types: pokeData.types
+            });
+          }).catch((err) => {
+            console.log(err);
+          });
+      });
+
+      return newPokemonList;
+    }
+  },
 };
 </script>
 

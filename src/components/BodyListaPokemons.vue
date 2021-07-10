@@ -4,8 +4,7 @@
       <b-col
         sm="4"
         class="d-flex justify-content-around"
-        v-for="(poke, i) in $parent.pokemonsPorPagina"
-        :key="i"
+        v-for="(poke, i) in pokemons" :key="i"
       >
         <b-card
           no-body
@@ -19,21 +18,21 @@
             variant="white"
           >
             <router-link
-              :to="{ name: 'Pokemon', params: { pokeId: poke.getId() } }"
+              :to="{ name: 'Pokemon', params: { pokeId: poke.id } }"
             >
               <div>
                 <b-img
-                  :src="poke.getImage()"
+                  :src="poke.image"
                   rounded="circle"
                   class="my-3"
                   thumbnail
                 ></b-img>
-                <p>{{ poke.nome | ucFirstWord }}</p>
+                <p>{{ poke.name | ucFirstWord }}</p>
               </div>
             </router-link>
             <b-card-body class="mt-n3">
               <span
-                v-for="type in poke.data.types"
+                v-for="type in poke.types"
                 :key="type.type.slot"
                 class="mx-2 px-2 py-1 border"
               >
@@ -49,7 +48,14 @@
 
 <script>
 export default {
-  name: 'BodyListaPokemons'
+  name: 'BodyListaPokemons',
+
+  props: {
+    pokemons: {
+      required: true,
+      type: Array,
+    }
+  }
 };
 </script>
 
