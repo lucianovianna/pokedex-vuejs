@@ -48,7 +48,9 @@
 </template>
 
 <script>
-export default {};
+export default {
+  name: 'BodyListaPokemons'
+};
 </script>
 
 <style>

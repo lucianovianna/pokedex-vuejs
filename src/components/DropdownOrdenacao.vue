@@ -15,6 +15,8 @@
 
 <script>
 export default {
+  name: 'DropdownOrdenacao',
+  
   methods: {
     setOrderAZ() {
       this.$parent.ordem.campo = ["nome"];

@@ -1,6 +1,5 @@
 <template>
   <div id="titulo">
-    <!-- Image and text -->
     <b-navbar variant="faded" type="light">
       <b-navbar-brand href="/">
         <b-img
@@ -17,7 +16,9 @@
 </template>
 
 <script>
-export default {};
+export default {
+  name: 'Titulo'
+};
 </script>
 
 <style>

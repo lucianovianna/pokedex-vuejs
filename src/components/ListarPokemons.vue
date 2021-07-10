@@ -23,6 +23,15 @@ import Pokemons from "../getPokemons";
 import Pokemon from "../pokemon";
 
 export default {
+  name: 'ListarPokemons',
+
+  components: {
+    Paginacao: () => import('@/components/Paginacao.vue'),
+    InputBusca: () => import('@/components/InputBusca.vue'),
+    DropdownOrdenacao: () => import('@/components/DropdownOrdenacao.vue'),
+    BodyListaPokemons: () => import('@/components/BodyListaPokemons.vue')
+  },
+
   created() {
     Pokemons.getPokemonsList()
       .then((res) => {
