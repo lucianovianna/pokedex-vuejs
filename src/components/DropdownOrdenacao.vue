@@ -23,20 +23,16 @@ export default {
 
   methods: {
     setOrderAZ() {
-      this.$parent.ordenacao.campo = "nome";
-      this.$parent.ordenacao.ordem = "asc";
+      this.$emit("changeOrder", { campo: "name", ordem: "asc" });
     },
     setOrderZA() {
-      this.$parent.ordenacao.campo = "nome";
-      this.$parent.ordenacao.ordem = "desc";
+      this.$emit("changeOrder", { campo: "name", ordem: "desc" });
     },
     setOrderIdAsc() {
-      this.$parent.ordenacao.campo = "id";
-      this.$parent.ordenacao.ordem = "asc";
+      this.$emit("changeOrder", { campo: "id", ordem: "asc" });
     },
     setOrderIdDesc() {
-      this.$parent.ordenacao.campo = "id";
-      this.$parent.ordenacao.ordem = "desc";
+      this.$emit("changeOrder", { campo: "id", ordem: "desc" });
     },
   },
 };

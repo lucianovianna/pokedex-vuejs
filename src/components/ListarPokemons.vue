@@ -15,7 +15,7 @@
         </b-input-group>
       </b-col>
       <b-col cols="*">
-        <dropdown-ordenacao />
+        <dropdown-ordenacao @changeOrder="ordernarPokemons($event)"/>
       </b-col>
     </b-row>
 
@@ -58,7 +58,6 @@ export default {
     return {
       pokemonsList: [],
       loading: false,
-      ordenacao: { ordem: "asc", campo: "nome"},
       busca: "",
       currentPage: 1,
       perPage: 15,
@@ -66,20 +65,8 @@ export default {
   },
 
   computed: {
-    pokemonsOrdenados() {
-      let campo = this.ordenacao.campo;
-      let ordenados = [];
-
-      if (this.ordenacao.ordem == "asc") {
-        ordenados =  this.pokemonsList.slice(0).sort((a, b) => a[campo] > b[campo] ? 1 : -1);
-      } else {
-        ordenados =  this.pokemonsList.slice(0).sort((a, b) => a[campo] > b[campo] ? -1 : 1);
-      }
-
-      return ordenados;
-    },
     pokemonsFiltrados() {
-      return this.pokemonsOrdenados.filter(
+      return this.pokemonsList.filter(
         (poke) => poke.name.toLowerCase().indexOf(this.busca.toLowerCase()) >= 0
       );
     },
@@ -99,9 +86,6 @@ export default {
     busca() {
       this.currentPage = 1;
     },
-    pokemonsOrdenados() {
-      console.log(JSON.parse(JSON.stringify(this.pokemonsOrdenados)));
-    }
   },
 
   methods: {
@@ -147,6 +131,20 @@ export default {
             });
         }
       });
+    },
+    ordernarPokemons(ordenacao) {
+      let campo = ordenacao.campo;
+      let pokemonList = JSON.parse(JSON.stringify(this.pokemonsList));
+      let ordenados = [];
+
+      if (ordenacao.ordem == "asc") {
+        ordenados = pokemonList.sort((a, b) => a[campo] > b[campo] ? 1 : -1);
+      } else {
+        ordenados = pokemonList.sort((a, b) => a[campo] > b[campo] ? -1 : 1);
+      }
+
+      this.currentPage = 1;
+      this.pokemonsList = ordenados;
     }
   },
 };
