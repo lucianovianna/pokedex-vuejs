@@ -121,7 +121,7 @@
 
 <script>
 import Chart from "../components/Chart.vue";
-import getPokemons from "../getPokemons";
+import getPokemons from "@/services/PokemonsService.js";
 
 export default {
   components: { Chart },

@@ -1,13 +1,17 @@
 <template>
   <div>
     <b-dropdown id="dropdown-1" text="Ordenar por..." class="m-md-2">
-      <b-dropdown-item href="#" @click="setOrderAZ()"> Nome A-Z </b-dropdown-item>
-      <b-dropdown-item href="#" @click="setOrderZA()"> Nome Z-A </b-dropdown-item>
-      <b-dropdown-item href="#" @click="setOrderIdAsc()"
-        >Crescente por ID
+      <b-dropdown-item href="#" @click="setOrderAZ()">
+        Nome A-Z
       </b-dropdown-item>
-      <b-dropdown-item href="#" @click="setOrderIdDesc()"
-        >Decrescente por ID
+      <b-dropdown-item href="#" @click="setOrderZA()">
+        Nome Z-A
+      </b-dropdown-item>
+      <b-dropdown-item href="#" @click="setOrderIdAsc()">
+        Crescente por ID
+      </b-dropdown-item>
+      <b-dropdown-item href="#" @click="setOrderIdDesc()">
+        Decrescente por ID
       </b-dropdown-item>
     </b-dropdown>
   </div>
@@ -15,28 +19,27 @@
 
 <script>
 export default {
-  name: 'DropdownOrdenacao',
-  
+  name: "DropdownOrdenacao",
+
   methods: {
     setOrderAZ() {
-      this.$parent.ordem.campo = ["nome"];
-      this.$parent.ordem.order = "asc";
+      this.$parent.ordenacao.campo = "nome";
+      this.$parent.ordenacao.ordem = "asc";
     },
     setOrderZA() {
-      this.$parent.ordem.campo = ["nome"];
-      this.$parent.ordem.order = "desc";
+      this.$parent.ordenacao.campo = "nome";
+      this.$parent.ordenacao.ordem = "desc";
     },
     setOrderIdAsc() {
-      this.$parent.ordem.campo = ["id"];
-      this.$parent.ordem.order = "asc";
+      this.$parent.ordenacao.campo = "id";
+      this.$parent.ordenacao.ordem = "asc";
     },
     setOrderIdDesc() {
-      this.$parent.ordem.campo = ["id"];
-      this.$parent.ordem.order = "desc";
+      this.$parent.ordenacao.campo = "id";
+      this.$parent.ordenacao.ordem = "desc";
     },
   },
 };
 </script>
 
-<style>
-</style>
+<style></style>

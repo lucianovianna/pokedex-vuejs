@@ -1,33 +1,51 @@
 <template>
   <div style="text-align: center">
     <b-row align-h="center" align-v="center" id="filtragens">
-      <input-busca></input-busca>
-      <dropdown-ordenacao></dropdown-ordenacao>
+      <b-col cols="*">
+        <b-input-group id="inputBusca">
+          <b-input-group-prepend is-text>
+            <b-icon icon="search" />
+          </b-input-group-prepend>
+
+          <b-form-input
+            v-model="busca" 
+            placeholder="Filtrar Pokemons"
+            type="search"
+          />
+        </b-input-group>
+      </b-col>
+      <b-col cols="*">
+        <dropdown-ordenacao />
+      </b-col>
     </b-row>
 
     <div class="d-flex align-items-center" v-if="loading">
-      <strong>Carregando...</strong>
-      <b-spinner class="ml-auto"></b-spinner>
+      <h3 class="mx-auto">Carregando...</h3>
+      <b-spinner class="mx-auto" />
     </div>
 
     <div v-else>
       <body-lista-pokemons :pokemons="pokemonsPorPagina" />
-      <paginacao />
+      <b-pagination
+        id="paginacao"
+        v-model="currentPage"
+        :total-rows="pokemonsFiltrados.length"
+        :per-page="perPage"
+        align="center"
+      />
+      <span>Pokemons encontrados: {{ pokemonsFiltrados.length }}</span>
     </div>
   </div>
 </template>
 
 <script>
 
-import _ from "lodash";
 import PokemonsService from "@/services/PokemonsService.js";
 
 export default {
   name: 'ListarPokemons',
 
   components: {
-    Paginacao: () => import('@/components/Paginacao.vue'),
-    InputBusca: () => import('@/components/InputBusca.vue'),
     DropdownOrdenacao: () => import('@/components/DropdownOrdenacao.vue'),
     BodyListaPokemons: () => import('@/components/BodyListaPokemons.vue')
   },
@@ -40,41 +58,49 @@ export default {
     return {
       pokemonsList: [],
       loading: false,
-      ordem: {
-        order: "asc",
-        campo: ["nome"],
-      },
+      ordenacao: { ordem: "asc", campo: "nome"},
       busca: "",
       currentPage: 1,
+      perPage: 15,
     };
   },
 
   computed: {
-    rows() {
-      return Math.ceil(this.pokemonsFiltrados.length / 3);
-    },
     pokemonsOrdenados() {
-      let ordenados = _.orderBy(this.pokemonsList, this.ordem.campo, this.ordem.order);
-      // console.log("Ordenados: ", JSON.parse(JSON.stringify(ordenados)));
+      let campo = this.ordenacao.campo;
+      let ordenados = [];
+
+      if (this.ordenacao.ordem == "asc") {
+        ordenados =  this.pokemonsList.slice(0).sort((a, b) => a[campo] > b[campo] ? 1 : -1);
+      } else {
+        ordenados =  this.pokemonsList.slice(0).sort((a, b) => a[campo] > b[campo] ? -1 : 1);
+      }
+
       return ordenados;
     },
     pokemonsFiltrados() {
-      var self = this;
-      return _.filter(this.pokemonsOrdenados, (poke) => {
-        let busca = self.busca.toLowerCase();
-        return poke.name.toLowerCase().indexOf(busca) >= 0;
-      });
+      return this.pokemonsOrdenados.filter(
+        (poke) => poke.name.toLowerCase().indexOf(this.busca.toLowerCase()) >= 0
+      );
     },
     pokemonsPorPagina() {
-      const perPage = 15;
-
-      let pokemons = this.pokemonsFiltrados.slice(
-        (this.currentPage - 1) * perPage,
-        this.currentPage * perPage
+      return this.pokemonsFiltrados.slice(
+        (this.currentPage - 1) * this.perPage,
+        this.currentPage * this.perPage
       );
+    },
+  },
 
-      console.log("pokemonsPorPagina: " , this.setPokemonsData(pokemons));
-      return this.setPokemonsData(pokemons);
+  watch: {
+    pokemonsPorPagina() {
+      let idList = this.pokemonsPorPagina.map(el => el.id);
+      this.setPokemonsData(idList);
+    },
+    busca() {
+      this.currentPage = 1;
+    },
+    pokemonsOrdenados() {
+      console.log(JSON.parse(JSON.stringify(this.pokemonsOrdenados)));
     }
   },
 
@@ -83,8 +109,17 @@ export default {
       this.loading = true;
 
       PokemonsService.getPokemonsList()
-        .then((res) => {
-          this.pokemonsList = res.data.results;
+        .then(res => {
+          let pokemons = [];
+          res.data.results.forEach(poke => {
+            pokemons.push({
+              ...poke,
+              id: poke.url.slice(34).slice(0, -1),
+              image: null,
+              types: null
+            });
+          });
+          this.pokemonsList = pokemons;
         })
         .catch((err) => {
           console.log(err);
@@ -93,26 +128,25 @@ export default {
           this.loading = false;
         });
     },
-    setPokemonsData(pokemonsList) {
-      let newPokemonList = [];
+    setPokemonsData(idList) {
+      idList.forEach(id => {
+        let pokeIdx = this.pokemonsList.findIndex(poke => poke.id == id);
 
-      pokemonsList.forEach(async poke => {
-        await PokemonsService.getPokemonDataByUrl(poke.url)
-          .then((res) => {
-            var pokeData = res.data;
-
-            newPokemonList.push({
-              ...poke,
-              image: pokeData.sprites.front_default,
-              id: pokeData.id,
-              types: pokeData.types
+        if (
+          pokeIdx != -1 &&
+          (this.pokemonsList[pokeIdx].image == null ||
+            this.pokemonsList[pokeIdx].types == null)
+        ) {
+          PokemonsService.getPokemonDataByUrl(this.pokemonsList[pokeIdx].url)
+            .then(res => {
+              var pokeData = res.data;
+              this.pokemonsList[pokeIdx].image = pokeData.sprites.front_default;
+              this.pokemonsList[pokeIdx].types = pokeData.types;
+            }).catch((err) => {
+              console.log(`Erro ao recuperar dados do pokemon ${id}: `, err);
             });
-          }).catch((err) => {
-            console.log(err);
-          });
+        }
       });
-
-      return newPokemonList;
     }
   },
 };
@@ -120,7 +154,13 @@ export default {
 
 
 <style>
-#filtragens {
-  margin-bottom: 60px;
-}
+  #filtragens {
+    margin-bottom: 60px;
+  }
+  #paginacao {
+    margin-top: 30px;
+  }
+  #inputBusca {
+    padding-right: 5em;
+  }
 </style>
