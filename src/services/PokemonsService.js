@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 const url = 'https://pokeapi.co/api/v2/pokemon/';
-const urlEvoChain = 'https://pokeapi.co/api/v2/evolution-chain/';
+const urlSpecies = 'https://pokeapi.co/api/v2/pokemon-species/';
 
 export default {
     getPokemonsList: (limit = 99999, offset = 0) => axios.get(url, { params: { limit, offset } }),
-    getPokemonDataByUrl: async (pokeUrl) => axios.get(pokeUrl),
+    getDataByUrl: async (customUrl) => axios.get(customUrl),
     getPokemonData: (pokeInfo) => axios.get(url + `${pokeInfo}`),
-    getEvolutionChain: (id) => axios.get(urlEvoChain + `${id}`),
+    getPokemonSpecies: (pokeId) => axios.get(urlSpecies + pokeId),
 };

@@ -121,7 +121,7 @@ export default {
           (this.pokemonsList[pokeIdx].image == null ||
             this.pokemonsList[pokeIdx].types == null)
         ) {
-          PokemonsService.getPokemonDataByUrl(this.pokemonsList[pokeIdx].url)
+          PokemonsService.getDataByUrl(this.pokemonsList[pokeIdx].url)
             .then(res => {
               var pokeData = res.data;
               this.pokemonsList[pokeIdx].image = pokeData.sprites.front_default;

@@ -6,26 +6,12 @@
   >
     <div class="container">
       <b-row class="mt-3">
-        <router-link
-          :to="{ name: 'Pokemon', params: { pokeId: Number(pokeId) - 1 } }"
-        >
-          <b-col
-            ><h2><b-icon-arrow-left></b-icon-arrow-left></h2
-          ></b-col>
-        </router-link>
         <b-col>
           <h1>
             {{ pokeData.name || "" | ucFirstWord }}
-            <span class="text-secondary">#{{ pokeData.id }}</span>
+            <span class="text-secondary"> #{{ pokeData.id }} </span>
           </h1>
         </b-col>
-        <router-link
-          :to="{ name: 'Pokemon', params: { pokeId: Number(pokeId) + 1 } }"
-        >
-          <b-col>
-            <h2><b-icon-arrow-right></b-icon-arrow-right></h2>
-          </b-col>
-        </router-link>
       </b-row>
 
       <hr />
@@ -103,15 +89,29 @@
         </div>
       </div>
       <div>
-        <h3 class="mb-4">Evolution Chain</h3>
-        <b-row v-if="evoChain != false" class="mb-5">
+        <h3 v-if="evoChain.lenght" class="mb-4">
+          Evolution Chain
+        </h3>
+        <b-row class="mb-5">
           <b-col v-for="(chain, i) in evoChain" :key="i">
-            <b-img
-              :src="getImageEvos(chain)"
-              rounded="circle"
-              thumbnail
-            ></b-img>
-            <span>{{ chain | ucFirstWord }}</span>
+            <b-row align-v="center">
+              <b-col cols="10">
+                <router-link :to="`/pokemon/${chain.id}`">
+                  <b-img 
+                    :src="chain.image" 
+                    rounded="circle" 
+                    thumbnail
+                    class="mb-1"
+                  />
+                  <p> {{ chain.name | ucFirstWord }} </p>
+                </router-link>
+              </b-col>
+              <b-col cols="2">
+                <h1 v-if="i < 2">
+                  <b-icon-arrow-right />
+                </h1>
+              </b-col>
+            </b-row>
           </b-col>
         </b-row>
       </div>
@@ -120,28 +120,28 @@
 </template>
 
 <script>
-import Chart from "../components/Chart.vue";
+
 import getPokemons from "@/services/PokemonsService.js";
 
 export default {
-  components: { Chart },
-  props: ["pokeId"],
+  components: {
+    Chart: () => import("@/components/Chart.vue"),
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    this.getPokemonData(to.params.pokeId);
+    next();
+  },
+
   created() {
-    this.getPokemonData();
+    this.getPokemonData(this.$route.params.pokeId);
   },
-  updated() {
-    // this.getPokemonData();
-  },
-//   beforeRouteUpdate (to, from, next) {
-//   // this.getPokemonData();
-//   // this.name = to.params.name
-//   // next();
-// },
+
   data() {
     return {
       pokeData: [],
       loadedDada: false,
-      evoChain: false,
+      evoChain: [],
       evosImage: [],
     };
   },
@@ -164,73 +164,70 @@ export default {
     },
   },
   methods: {
-    getPokemonData() {
+    getPokemonData(pokeId) {
+      this.pokeData = [];
+      this.loadedDada = false;
+      this.evoChain = [];
+      this.evosImage = [];
+
       getPokemons
-      .getPokemonData(this.pokeId)
-      .then((res) => {
-        console.log(res.data);
-        return (this.pokeData = res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .then(() =>
-        setTimeout(() => {
-          this.loadedDada = true;
-          this.getEvoChain(this.pokeId);
-        }, 300)
-      );
-    },
-    getEvoChain(id, token = 50) {
-      if (token != 0) {
-        console.log("chegou no getEvoChain(id)");
-
-        var evoData;
-        var evoChain = [];
-
-        getPokemons
-          .getEvolutionChain(id)
-          .then((res) => {
-            // console.log(res.data.chain);
-            evoData = res.data.chain;
-          })
-          .catch((err) => {
-            console.log(err);
-          })
-          .then(() => {
-            do {
-              evoChain.push(evoData.species.name);
-              evoData = evoData.evolves_to[0];
-            } while (
-              evoData != undefined &&
-              Object.prototype.hasOwnProperty.call(evoData, "evolves_to")
-            );
-
-            if (evoChain.includes(this.pokeData.name)) {
-              this.evoChain = evoChain;
-            } else {
-              this.getEvoChain(id - 1, token);
-            }
-          });
-      }
-    },
-    getImageEvos(evoName) {
-      var data;
-      getPokemons
-        .getPokemonData(evoName)
+        .getPokemonData(pokeId)
         .then((res) => {
-          // console.log("getimageevos()", res.data);
-          data = res.data;
+          return (this.pokeData = res.data);
         })
         .catch((err) => {
-          console.log(err);
+          console.log(`Erro ao recuperar dados do pokemon ${pokeId}`, err);
         })
-        .then(() => {
-          let imageUrl =
-            data.sprites.other["official-artwork"].front_default ||
-            data.sprites.front_default;
-          return imageUrl;
+        .finally(() => {
+          this.loadedDada = true;
+          this.getEvoChainUrl(pokeId);
         });
+    },
+    getEvoChainUrl(id) {
+      getPokemons
+        .getPokemonSpecies(id)
+        .then((res) => {
+          this.getEvoChain(res.data.evolution_chain.url);
+        })
+        .catch((err) => {
+          console.log(`Erro ao recuperar URL da Evolution Chain do pokemon ${id}`, err);
+        });
+    },
+    getEvoChain(evoUrl) {
+      getPokemons
+        .getDataByUrl(evoUrl)
+        .then(async res => {
+          let evoData = res.data.chain;
+
+          do {
+            this.evoChain.push({
+              name: evoData.species.name, 
+              ...await this.getImageEvos(evoData.species.name)
+            });
+
+            evoData = evoData.evolves_to[0];
+          } while (
+            evoData != undefined &&
+            Object.prototype.hasOwnProperty.call(evoData, "evolves_to")
+          );
+        })
+        .catch((err) => {
+          console.log("Erro ao recuperar evolution chain do pokemon: ", err);
+        });
+    },
+    async getImageEvos(evoName) {
+      return await getPokemons
+        .getPokemonData(evoName)
+        .then((res) => {
+          return {
+            image: res.data.sprites.front_default,
+            id: res.data.id
+          };
+        })
+        .catch((err) => {
+          console.log(`Erro ao recuperar a imagem do pokemon ${evoName}`,err);
+          return null;
+        })
     },
   },
 };
