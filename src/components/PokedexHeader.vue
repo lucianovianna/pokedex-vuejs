@@ -27,6 +27,6 @@ export default {
     height: 10px;
     width: 100%;
 
-    background-color: var(--primary-color);
+    background-color: var(--primary);
   }
 </style>

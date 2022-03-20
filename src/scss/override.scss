@@ -1,0 +1,11 @@
+// Define variable overrides here
+$primary: #C00;
+$secondary: #CCCA14;
+$default: #2C3E50;
+
+// Import Bootstrap and BootstrapVue source SCSS files
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap-vue/src/index.scss';
+
+// Define general style overrides and custom classes
+// ...
