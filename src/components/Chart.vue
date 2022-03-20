@@ -51,7 +51,6 @@ export default {
           this.data.datasets[0].data.push(this.chartData[`${i}`].base_stat);
         }
       }
-      console.log("this.data.datasets: ", this.data.datasets);
     },
   },
 };
