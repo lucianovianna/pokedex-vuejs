@@ -11,7 +11,6 @@ export default {
     this.setData();
   },
   mounted() {
-    // console.log("data no mounted:", this.data);
     this.renderChart(this.data, this.options);
   },
   data() {
@@ -27,16 +26,19 @@ export default {
         ],
         datasets: [
           {
-            label: "",
-            backgroudColor: "#e60000",
+            backgroundColor: "rgba(204, 202, 20, 0.5)", // secondary color (#CCCA14) with 50% of transparency
+            data: [],
           },
         ],
       },
       options: {
         legend: {
-          // title: "Stats",
           display: false,
         },
+        tooltips: {
+          displayColors: false,
+        },
+        color: "#CCCA14",
         responsive: true,
         maintainAspectRatio: false,
       },
@@ -45,12 +47,11 @@ export default {
   methods: {
     setData() {
       if (this.chartData != undefined) {
-        this.data.datasets[0].data = [];
         for (let i = 0; i < 6; i++) {
           this.data.datasets[0].data.push(this.chartData[`${i}`].base_stat);
         }
       }
-      // console.log("setData()", this.data);
+      console.log("this.data.datasets: ", this.data.datasets);
     },
   },
 };
