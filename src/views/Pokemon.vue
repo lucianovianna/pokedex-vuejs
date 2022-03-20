@@ -107,7 +107,7 @@
                 </router-link>
               </b-col>
               <b-col cols="2">
-                <h1 v-if="i < 2">
+                <h1 v-if="evoChain[i+1]">
                   <b-icon-arrow-right />
                 </h1>
               </b-col>
