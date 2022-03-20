@@ -9,11 +9,11 @@
     </span>
 
     <span>
-        <a href="https://www.linkedin.com/in/lucianocvn/" target="_blank">
+        <a href="https://github.com/lucianovianna" target="_blank">
             <b-icon-github style="color: var(--default);"/>
         </a>
     </span>
-    
+
     <div class="bar" />
   </div>
 </template>
