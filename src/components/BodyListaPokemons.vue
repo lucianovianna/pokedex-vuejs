@@ -8,8 +8,8 @@
     >
       <b-card
         no-body
-        class="overflow-hidden mb-5"
-        style="width: 250px"
+        class="mb-5"
+        style="width: 250px;"
         align="center"
       >
         <b-overlay

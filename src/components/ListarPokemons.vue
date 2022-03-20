@@ -1,16 +1,19 @@
 <template>
   <div style="text-align: center">
-    <b-row align-h="center" align-v="center" id="filtragens">
+    <b-row align-h="center" align-v="center" class="mb-5">
       <b-col cols="*">
-        <b-input-group id="inputBusca">
-          <b-input-group-prepend is-text>
-            <b-icon icon="search" />
-          </b-input-group-prepend>
+        <b-input-group class="pr-5">
+          <template #prepend>
+            <b-input-group-text style="background-color: var(--secondary)">
+              <b-icon-search />
+            </b-input-group-text>
+          </template>
 
-          <b-form-input
-            v-model="busca" 
+          <input 
+            v-model="busca"
             placeholder="Filtrar Pokemons"
-            type="search"
+            type="text" 
+            style="outline: none; padding-left: 10px;"
           />
         </b-input-group>
       </b-col>
@@ -27,7 +30,7 @@
     <div v-else>
       <body-lista-pokemons :pokemons="pokemonsPorPagina" />
       <b-pagination
-        id="paginacao"
+        class="mt-3"
         v-model="currentPage"
         :total-rows="pokemonsFiltrados.length"
         :per-page="perPage"
@@ -152,13 +155,4 @@ export default {
 
 
 <style>
-  #filtragens {
-    margin-bottom: 60px;
-  }
-  #paginacao {
-    margin-top: 30px;
-  }
-  #inputBusca {
-    padding-right: 5em;
-  }
 </style>
