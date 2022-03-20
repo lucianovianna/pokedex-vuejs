@@ -1,10 +1,26 @@
 <template>
-  <div id="app" class="container">
-    <router-view/>
+  <div id="app">
+    <pokedex-header />
+    <router-view class="container" />
   </div>
 </template>
 
+<script>
+
+export default {
+  components: {
+    PokedexHeader: () => import('@/components/PokedexHeader.vue'),
+  },
+};
+</script>
+
+
 <style>
+:root {
+  --primary-color: #C00;
+  --secondary-color: #CCCA14;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
