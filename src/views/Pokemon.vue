@@ -14,8 +14,6 @@
         </b-col>
       </b-row>
 
-      <hr />
-
       <div class="pokeInfo">
         <div>
           <b-card
@@ -30,7 +28,7 @@
                   :src="getImage"
                   :alt="pokeData.name || '' | ucFirstWord"
                   class="rounded-0"
-                ></b-card-img>
+                />
               </b-col>
               <b-col md="6">
                 <b-card-body
@@ -57,16 +55,17 @@
             <b-col>Weight</b-col>
           </b-row>
           <b-row class="dataPokeInfo">
-            <b-col>{{ pokeData.height }}</b-col>
-            <b-col>{{ pokeData.weight }}</b-col>
+            <b-col>{{ pokeData.height }} cm</b-col>
+            <b-col>{{ pokeData.weight / 10 }} kg</b-col>
           </b-row>
 
           <b-row class="labelPokeInfo">
             <b-col class="mt-2">Type</b-col>
           </b-row>
-          <b-row class="dataPokeInfo">
+          <b-row class="dataPokeInfo" align-h="center">
             <b-col
               v-for="(type, i) in getTypes"
+              cols="auto"
               :key="i"
               class="mx-2 my-4 px-2 py-1 border"
             >
@@ -77,9 +76,10 @@
           <b-row>
             <b-col class="labelPokeInfo">Abilities</b-col>
           </b-row>
-          <b-row>
+          <b-row align-h="center">
             <b-col
               v-for="(ability, i) in getAbilities"
+              cols="auto"
               :key="i"
               class="mx-2 my-4 px-auto py-1 border"
             >
@@ -88,8 +88,8 @@
           </b-row>
         </div>
       </div>
-      <div>
-        <h3 v-if="evoChain.lenght" class="mb-4">
+      <div v-if="evoChain.length ? true : false">
+        <h3 class="mb-4">
           Evolution Chain
         </h3>
         <b-row class="mb-5">
