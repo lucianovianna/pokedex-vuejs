@@ -1,16 +1,16 @@
 <template>
   <div>
-    <b-dropdown id="dropdown-1" text="Ordenar por..." class="m-md-2">
-      <b-dropdown-item href="#" @click="setOrderAZ()">
+    <b-dropdown id="dropdown-1" text="Ordenar por ">
+      <b-dropdown-item  @click="setOrderAZ()">
         Nome A-Z
       </b-dropdown-item>
-      <b-dropdown-item href="#" @click="setOrderZA()">
+      <b-dropdown-item  @click="setOrderZA()">
         Nome Z-A
       </b-dropdown-item>
-      <b-dropdown-item href="#" @click="setOrderIdAsc()">
+      <b-dropdown-item  @click="setOrderIdAsc()">
         Crescente por ID
       </b-dropdown-item>
-      <b-dropdown-item href="#" @click="setOrderIdDesc()">
+      <b-dropdown-item  @click="setOrderIdDesc()">
         Decrescente por ID
       </b-dropdown-item>
     </b-dropdown>
@@ -38,4 +38,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+  #dropdown-1 a {
+    color: var(--default) !important;
+  }
+</style>
