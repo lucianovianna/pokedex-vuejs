@@ -15,7 +15,14 @@ Vue.use(IconsPlugin);
 
 Vue.config.productionTip = false;
 
-Vue.filter('ucFirstWord', (val) => val.charAt(0).toUpperCase() + val.slice(1));
+Vue.filter('ucFirstWord', (str) => str.charAt(0).toUpperCase() + str.slice(1));
+Vue.filter('kebabCaseToTitleCase', (str) => {
+  return str.split('-')
+    .map(word => {
+      return word.slice(0, 1).toUpperCase() + word.slice(1)
+    })
+    .join(' ');
+});
 
 new Vue({
   router,
