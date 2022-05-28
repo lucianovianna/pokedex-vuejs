@@ -8,7 +8,7 @@
       <b-row class="mt-3">
         <b-col>
           <h1>
-            {{ pokeData.name || "" | ucFirstWord }}
+            {{ pokeData.name || "" | kebabCaseToTitleCase }}
             <span class="text-secondary"> #{{ pokeData.id }} </span>
           </h1>
         </b-col>
@@ -103,7 +103,7 @@
                     thumbnail
                     class="mb-1"
                   />
-                  <p> {{ chain.name | ucFirstWord }} </p>
+                  <p> {{ chain.name | kebabCaseToTitleCase }} </p>
                 </router-link>
               </b-col>
               <b-col cols="2">

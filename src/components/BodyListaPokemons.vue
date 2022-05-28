@@ -25,7 +25,7 @@
                 class="my-3"
                 thumbnail
               />
-              <p>{{ poke.name | ucFirstWord }}</p>
+              <p>{{ poke.name | kebabCaseToTitleCase }}</p>
             </div>
           </router-link>
           <b-card-body class="mt-n3">
