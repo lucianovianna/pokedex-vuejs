@@ -2,23 +2,35 @@
   <div style="text-align: center">
     <b-row align-h="center" align-v="center" class="mb-5">
       <b-col cols="*">
-        <b-input-group class="pr-5">
+        <b-input-group class="pr-5" v-b-tooltip.hover title="Pesquisar Pokemons">
           <template #prepend>
             <b-input-group-text style="background-color: var(--secondary)">
               <b-icon-search />
             </b-input-group-text>
           </template>
 
-          <input 
+          <b-input 
             v-model="busca"
-            placeholder="Filtrar Pokemons"
+            placeholder="Pesquisar Pokemons"
             type="text" 
-            style="outline: none; padding-left: 10px;"
+            style="outline: none; box-shadow: none;"
           />
         </b-input-group>
       </b-col>
       <b-col cols="*">
-        <dropdown-ordenacao @changeOrder="setOrdenacao($event)"/>
+        <b-input-group class="pr-5" v-b-tooltip.hover title="Selecionar Ordenação">
+          <template #prepend>
+            <b-input-group-text style="background-color: var(--secondary)">
+              <b-icon-filter />
+            </b-input-group-text>
+          </template>
+
+          <b-form-select 
+            v-model="ordenacao" 
+            :options="ordanacaoOptions" 
+            style="outline: none; box-shadow: none;"
+          />
+        </b-input-group>
       </b-col>
     </b-row>
 
@@ -49,7 +61,6 @@ export default {
   name: 'ListarPokemons',
 
   components: {
-    DropdownOrdenacao: () => import('@/components/DropdownOrdenacao.vue'),
     BodyListaPokemons: () => import('@/components/BodyListaPokemons.vue')
   },
 
@@ -66,6 +77,12 @@ export default {
         campo: "id", 
         ordem: "asc" 
       },
+      ordanacaoOptions: [
+        { value: { campo: "id", ordem: "asc" }, text: 'Crescente por ID' },
+        { value: { campo: "id", ordem: "desc" }, text: 'Decrescente por ID' },
+        { value: { campo: "name", ordem: "asc" }, text: 'Nome A-Z' },
+        { value: { campo: "name", ordem: "desc" }, text: 'Nome Z-A' }
+      ],
       currentPage: 1,
       perPage: 15,
     };
