@@ -19,18 +19,19 @@
           <b-card
             no-body
             class="overflow-hidden mb-5"
-            style="max-width: 950px; max-height: 500px"
+            style="max-width: 950px;"
             align="center"
           >
             <b-row no-gutters>
-              <b-col md="6">
+              <b-col md="6" align-self="center">
                 <b-card-img
                   :src="getImage"
                   :alt="pokeData.name || '' | kebabCaseToTitleCase"
                   class="rounded-0"
+                  style="max-height: 500px;"
                 />
               </b-col>
-              <b-col md="6">
+              <b-col md="6" align-self="center">
                 <b-card-body
                   v-if="loadedDada"
                   class="border-left"

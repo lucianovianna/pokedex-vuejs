@@ -40,7 +40,7 @@ export default {
         },
         color: "#CCCA14",
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: true,
       },
     };
   },
