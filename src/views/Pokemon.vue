@@ -26,7 +26,7 @@
               <b-col md="6">
                 <b-card-img
                   :src="getImage"
-                  :alt="pokeData.name || '' | ucFirstWord"
+                  :alt="pokeData.name || '' | kebabCaseToTitleCase"
                   class="rounded-0"
                 />
               </b-col>
