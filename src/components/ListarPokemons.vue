@@ -101,12 +101,14 @@ export default {
         this.currentPage * this.perPage
       );
     },
+    buscaCurrentPageOrdenacao() {
+      return `${this.busca}|${this.currentPage}|${JSON.stringify(this.ordenacao)}`;
+    },
   },
 
   watch: {
-    pokemonsPorPagina() {
-      let idList = this.pokemonsPorPagina.map(el => el.id);
-      this.setPokemonsData(idList);
+    buscaCurrentPageOrdenacao() {
+      this.setPokemonsData();
     },
     busca() {
       this.currentPage = 1;
@@ -128,7 +130,10 @@ export default {
               types: null
             });
           });
+
           this.pokemonsList = pokemons;
+
+          this.setPokemonsData();
         })
         .catch((err) => {
           console.log(err);
@@ -137,7 +142,9 @@ export default {
           this.loading = false;
         });
     },
-    setPokemonsData(idList) {
+    setPokemonsData() {
+      const idList = this.pokemonsPorPagina.map(poke => poke.id);
+
       idList.forEach(id => {
         let pokeIdx = this.pokemonsList.findIndex(poke => poke.id == id);
 
@@ -148,11 +155,11 @@ export default {
         ) {
           PokemonsService.getDataByUrl(this.pokemonsList[pokeIdx].url)
             .then(res => {
-              var pokeData = res.data;
+              let pokeData = res.data;
               this.pokemonsList[pokeIdx].image = pokeData.sprites.front_default;
               this.pokemonsList[pokeIdx].types = pokeData.types;
             }).catch((err) => {
-              console.log(`Erro ao recuperar dados do pokemon ${id}: `, err);
+              console.log(`Erro ao recuperar dados do pokemon ${id}: ${err}`);
             });
         }
       });
@@ -166,5 +173,4 @@ export default {
 </script>
 
 
-<style>
-</style>
+<style></style>
