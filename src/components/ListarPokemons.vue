@@ -82,11 +82,7 @@ export default {
         "asc": (a, b) => a > b
       };
 
-      if (campo == "id") {
-        orderedPokemonsList.sort((a, b) => operation[ordem](Number(a[campo]), Number(b[campo])) ? 1 : -1);
-      } else {
-        orderedPokemonsList.sort((a, b) => operation[ordem](a[campo], b[campo]) ? 1 : -1);
-      }
+      orderedPokemonsList.sort((a, b) => operation[ordem](a[campo], b[campo]) ? 1 : -1);
 
       return orderedPokemonsList;
     },
@@ -125,7 +121,7 @@ export default {
           res.data.results.forEach(poke => {
             pokemons.push({
               ...poke,
-              id: poke.url.slice(34).slice(0, -1),
+              id: Number(poke.url.slice(34).slice(0, -1)),
               image: null,
               types: null
             });
