@@ -69,7 +69,7 @@
             :key="i"
             class="mx-2 my-4 px-2 py-1 border"
           >
-            {{ type.type.name | ucFirstWord }}
+            {{ type.type.name | kebabCaseToTitleCase }}
           </b-col>
         </b-row>
 
@@ -83,7 +83,7 @@
             :key="i"
             class="mx-2 my-4 px-auto py-1 border"
           >
-            {{ ability.ability.name | ucFirstWord }}
+            {{ ability.ability.name | kebabCaseToTitleCase }}
           </b-col>
         </b-row>
       </section>
