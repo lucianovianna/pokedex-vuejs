@@ -5,7 +5,7 @@
     variant="white"
   >
     <div class="container">
-      <b-row class="mt-3">
+      <b-row class="mt-3" tag="section">
         <b-col>
           <h1>
             {{ pokeData.name || "" | kebabCaseToTitleCase }}
@@ -14,108 +14,98 @@
         </b-col>
       </b-row>
 
-      <div class="pokeInfo">
-        <div>
-          <b-card
-            no-body
-            class="overflow-hidden mb-5"
-            style="max-width: 950px;"
-            align="center"
+      <section class="pokeInfo">
+        <b-card
+          no-body
+          class="overflow-hidden mb-5"
+          style="max-width: 950px;"
+          align="center"
+        >
+          <b-row no-gutters>
+            <b-col md="6" align-self="center">
+              <b-card-img
+                :src="getImage"
+                :alt="pokeData.name || '' | kebabCaseToTitleCase"
+                class="rounded-0"
+                style="max-height: 500px;"
+              />
+            </b-col>
+            <b-col md="6" align-self="center">
+              <b-card-body
+                v-if="loadedDada"
+                class="border-left"
+                title="Status"
+              >
+                <div>
+                  <b-row>
+                    <b-col>
+                      <chart :chartData="pokeData.stats"></chart>
+                    </b-col>
+                  </b-row>
+                </div>
+              </b-card-body>
+            </b-col>
+          </b-row>
+        </b-card>
+      </section>
+
+      <section class="pokeInfo">
+        <b-row class="labelPokeInfo">
+          <b-col>Height</b-col>
+          <b-col>Weight</b-col>
+        </b-row>
+        <b-row class="dataPokeInfo">
+          <b-col>{{ pokeData.height }} cm</b-col>
+          <b-col>{{ pokeData.weight / 10 }} kg</b-col>
+        </b-row>
+
+        <b-row class="labelPokeInfo">
+          <b-col class="mt-2">Type</b-col>
+        </b-row>
+        <b-row class="dataPokeInfo" align-h="center">
+          <b-col
+            v-for="(type, i) in getTypes"
+            cols="auto"
+            :key="i"
+            class="mx-2 my-4 px-2 py-1 border"
           >
-            <b-row no-gutters>
-              <b-col md="6" align-self="center">
-                <b-card-img
-                  :src="getImage"
-                  :alt="pokeData.name || '' | kebabCaseToTitleCase"
-                  class="rounded-0"
-                  style="max-height: 500px;"
-                />
-              </b-col>
-              <b-col md="6" align-self="center">
-                <b-card-body
-                  v-if="loadedDada"
-                  class="border-left"
-                  title="Status"
-                >
-                  <div>
-                    <b-row>
-                      <b-col>
-                        <chart :chartData="pokeData.stats"></chart>
-                      </b-col>
-                    </b-row>
-                  </div>
-                </b-card-body>
-              </b-col>
-            </b-row>
-          </b-card>
-        </div>
+            {{ type.type.name | ucFirstWord }}
+          </b-col>
+        </b-row>
 
-        <div>
-          <b-row class="labelPokeInfo">
-            <b-col>Height</b-col>
-            <b-col>Weight</b-col>
-          </b-row>
-          <b-row class="dataPokeInfo">
-            <b-col>{{ pokeData.height }} cm</b-col>
-            <b-col>{{ pokeData.weight / 10 }} kg</b-col>
-          </b-row>
+        <b-row>
+          <b-col class="labelPokeInfo">Abilities</b-col>
+        </b-row>
+        <b-row align-h="center">
+          <b-col
+            v-for="(ability, i) in getAbilities"
+            cols="auto"
+            :key="i"
+            class="mx-2 my-4 px-auto py-1 border"
+          >
+            {{ ability.ability.name | ucFirstWord }}
+          </b-col>
+        </b-row>
+      </section>
 
-          <b-row class="labelPokeInfo">
-            <b-col class="mt-2">Type</b-col>
-          </b-row>
-          <b-row class="dataPokeInfo" align-h="center">
-            <b-col
-              v-for="(type, i) in getTypes"
-              cols="auto"
-              :key="i"
-              class="mx-2 my-4 px-2 py-1 border"
-            >
-              {{ type.type.name | ucFirstWord }}
-            </b-col>
-          </b-row>
-
-          <b-row>
-            <b-col class="labelPokeInfo">Abilities</b-col>
-          </b-row>
-          <b-row align-h="center">
-            <b-col
-              v-for="(ability, i) in getAbilities"
-              cols="auto"
-              :key="i"
-              class="mx-2 my-4 px-auto py-1 border"
-            >
-              {{ ability.ability.name | ucFirstWord }}
-            </b-col>
-          </b-row>
-        </div>
-      </div>
-      <div v-if="evoChain.length ? true : false">
+      <section v-if="evoChain.length ? true : false">
         <h3 class="mb-4">
           Evolution Chain
         </h3>
-        <b-row class="mb-5">
-          <b-col v-for="(chain, i) in evoChain" :key="i">
-            <b-row align-v="center">
-              <b-col cols="10">
-                <router-link :to="`/pokemon/${chain.id}`">
-                  <b-img 
-                    :src="chain.image" 
-                    rounded="circle" 
-                    thumbnail
-                    class="mb-1"
-                  />
-                  <p> {{ chain.name | kebabCaseToTitleCase }} </p>
-                </router-link>
-              </b-col>
-              <b-col cols="2">
-                <h1 v-if="evoChain[i+1]">
-                  <b-icon-arrow-right />
-                </h1>
-              </b-col>
-            </b-row>
+        <b-row no-gutters class="mb-5" align-h="center">
+          <b-col v-for="(chain, i) in evoChain" :key="i" cols="12" sm="4">
+            <router-link :to="`/pokemon/${chain.id}`">
+              <b-img 
+                :src="chain.image" 
+                rounded="circle" 
+                thumbnail
+                class="mb-1"
+              />
+              <p> {{ chain.name | kebabCaseToTitleCase }} </p>
+            </router-link>
           </b-col>
         </b-row>
-      </div>
+      </section>
     </div>
   </b-overlay>
 </template>
