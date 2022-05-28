@@ -175,8 +175,8 @@ export default {
         .then((res) => {
           return (this.pokeData = res.data);
         })
-        .catch((err) => {
-          console.log(`Erro ao recuperar dados do pokemon ${pokeId}`, err);
+        .catch(err => {
+          console.error(`Erro ao recuperar dados do pokemon ${pokeId}`, err);
         })
         .finally(() => {
           this.loadedDada = true;
@@ -189,8 +189,8 @@ export default {
         .then((res) => {
           this.getEvoChain(res.data.evolution_chain.url);
         })
-        .catch((err) => {
-          console.log(`Erro ao recuperar URL da Evolution Chain do pokemon ${id}`, err);
+        .catch(err => {
+          console.error(`Erro ao recuperar URL da Evolution Chain do pokemon ${id}`, err);
         });
     },
     getEvoChain(evoUrl) {
@@ -211,8 +211,8 @@ export default {
             Object.prototype.hasOwnProperty.call(evoData, "evolves_to")
           );
         })
-        .catch((err) => {
-          console.log("Erro ao recuperar evolution chain do pokemon: ", err);
+        .catch(err => {
+          console.error("Erro ao recuperar evolution chain do pokemon: ", err);
         });
     },
     async getImageEvos(evoName) {
@@ -224,8 +224,8 @@ export default {
             id: res.data.id
           };
         })
-        .catch((err) => {
-          console.log(`Erro ao recuperar a imagem do pokemon ${evoName}`,err);
+        .catch(err => {
+          console.error(`Erro ao recuperar a imagem do pokemon ${evoName}`,err);
           return null;
         })
     },

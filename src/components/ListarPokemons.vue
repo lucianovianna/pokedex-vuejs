@@ -131,8 +131,8 @@ export default {
 
           this.setPokemonsData();
         })
-        .catch((err) => {
-          console.log(err);
+        .catch(err => {
+          console.error(err);
         })
         .finally(() => {
           this.loading = false;
@@ -154,8 +154,8 @@ export default {
               let pokeData = res.data;
               this.pokemonsList[pokeIdx].image = pokeData.sprites.front_default;
               this.pokemonsList[pokeIdx].types = pokeData.types;
-            }).catch((err) => {
-              console.log(`Erro ao recuperar dados do pokemon ${id}: ${err}`);
+            }).catch(err => {
+              console.error(`Erro ao recuperar dados do pokemon ${id}: `, err);
             });
         }
       });
