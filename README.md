@@ -70,6 +70,8 @@ npm test
 ```
 
 Os testes usam o Node.js e as ferramentas de compilação já incluídas no projeto.
+O [workflow de CI](.github/workflows/ci.yml) executa instalação, testes, lint e
+build em pull requests e pushes na branch `main`, usando o Node da `.nvmrc`.
 
 ## Estrutura
 
