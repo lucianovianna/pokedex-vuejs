@@ -284,6 +284,47 @@ test('invalid URL filters use safe defaults and pages stay within the results', 
   view.$destroy();
 });
 
+test('API requests have a timeout and reuse concurrent, ID and name lookups', async () => {
+  const pending = deferred();
+  let calls = 0;
+  let timeout;
+  const service = loadModule('src/services/PokemonsService.js', { axios: {
+    create: options => {
+      timeout = options.timeout;
+      return { get: () => { calls++; return pending.promise; } };
+    },
+  } });
+  const first = service.getPokemonData(1);
+  const second = service.getDataByUrl('https://pokeapi.co/api/v2/pokemon/1/');
+  assert.ok(timeout > 0 && timeout <= 15000);
+  assert.equal(calls, 1);
+  pending.resolve({ data: { id: 1, name: 'bulbasaur' } });
+  await Promise.all([first, second]);
+  await service.getPokemonData('bulbasaur');
+  await service.getPokemonData(1);
+  assert.equal(calls, 1);
+});
+
+test('failed API requests are not cached and different list pages stay separate', async () => {
+  let calls = 0;
+  let fail = true;
+  const service = loadModule('src/services/PokemonsService.js', { axios: {
+    create: () => ({ get: async () => {
+      calls++;
+      if (fail) throw new Error('Timeout');
+      return { data: { results: [] } };
+    } }),
+  } });
+  await assert.rejects(service.getPokemonsList(15, 0), /Timeout/);
+  fail = false;
+  await service.getPokemonsList(15, 0);
+  await service.getPokemonsList(15, 0);
+  assert.equal(calls, 2);
+  await service.getPokemonsList(15, 15);
+  await service.getPokemonsList(30, 0);
+  assert.equal(calls, 4);
+});
+
 (async () => {
   for (const { name, run } of tests) {
     try {
