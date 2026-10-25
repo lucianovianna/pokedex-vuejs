@@ -13,25 +13,33 @@
         align="center"
       >
         <b-overlay
-          :show="!poke.image ? true : false"
+          :show="poke.loading"
           rounded="circle"
           variant="white"
         >
-          <router-link :to="'pokemon/' + poke.id">
+          <router-link :to="{ name: 'Pokemon', params: { pokeId: poke.id } }">
             <div>
               <b-img
+                v-if="poke.image"
                 :src="poke.image"
                 rounded="circle"
                 class="my-3"
                 thumbnail
               />
+              <p v-else class="my-3">Imagem indisponível</p>
               <p>{{ poke.name | kebabCaseToTitleCase }}</p>
             </div>
           </router-link>
           <b-card-body class="mt-n3">
+            <div v-if="poke.error" role="alert">
+              <p>Não foi possível carregar os detalhes.</p>
+              <b-button size="sm" variant="outline-danger" @click="$emit('retry', poke)">
+                Tentar novamente
+              </b-button>
+            </div>
             <span
               v-for="type in poke.types"
-              :key="type.type.slot"
+              :key="type.slot"
               class="mx-2 px-2 py-1 border"
             >
               {{ type.type.name | ucFirstWord }}
@@ -46,7 +54,7 @@
 <script>
 export default {
   name: 'BodyListaPokemons',
-  
+
   props: {
     pokemons: {
       required: true,

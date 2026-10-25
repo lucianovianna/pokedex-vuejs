@@ -61,7 +61,14 @@ npm run lint -- --no-fix
 ```
 
 O comando `npm run lint`, sem `--no-fix`, também aplica correções automáticas.
-O projeto ainda não possui suíte de testes automatizados.
+Para executar os testes de regressão de busca, ordenação, paginação, dados e
+falhas da API, sem consultar a PokéAPI ao vivo:
+
+```bash
+npm test
+```
+
+Os testes usam o Node.js e as ferramentas de compilação já incluídas no projeto.
 
 ## Estrutura
 

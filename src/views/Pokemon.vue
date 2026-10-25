@@ -1,10 +1,16 @@
 <template>
   <b-overlay
-    :show="pokeData.length === 0 ? true : false"
+    :show="loading"
     rounded="circle"
     variant="white"
   >
-    <div class="container">
+    <b-alert v-if="error" show variant="danger">
+      {{ error }}
+      <b-button variant="outline-danger" @click="getPokemonData($route.params.pokeId)">
+        Tentar novamente
+      </b-button>
+    </b-alert>
+    <div v-if="pokeData" class="container">
       <b-row class="mt-3" tag="section">
         <b-col>
           <h1>
@@ -24,22 +30,24 @@
           <b-row no-gutters>
             <b-col md="6" align-self="center">
               <b-card-img
+                v-if="getImage"
                 :src="getImage"
                 :alt="pokeData.name || '' | kebabCaseToTitleCase"
                 class="rounded-0"
                 style="max-height: 500px;"
               />
+              <p v-else>Imagem indisponível</p>
             </b-col>
             <b-col md="6" align-self="center">
               <b-card-body
-                v-if="loadedDada"
+                v-if="pokeData.stats && pokeData.stats.length"
                 class="border-left"
                 title="Status"
               >
                 <div>
                   <b-row>
                     <b-col>
-                      <chart :chartData="pokeData.stats"></chart>
+                      <chart :key="pokeData.id" :chartData="pokeData.stats"></chart>
                     </b-col>
                   </b-row>
                 </div>
@@ -55,7 +63,7 @@
           <b-col>Weight</b-col>
         </b-row>
         <b-row class="dataPokeInfo">
-          <b-col>{{ pokeData.height }} cm</b-col>
+          <b-col>{{ heightInCentimeters }} cm</b-col>
           <b-col>{{ pokeData.weight / 10 }} kg</b-col>
         </b-row>
 
@@ -88,16 +96,21 @@
         </b-row>
       </section>
 
-      <section v-if="evoChain.length ? true : false">
+      <p v-if="evolutionLoading" role="status">Carregando evoluções...</p>
+      <b-alert v-if="evolutionError" show variant="warning">
+        {{ evolutionError }}
+        <b-button variant="outline-secondary" @click="loadEvolutionChain()">Tentar novamente</b-button>
+      </b-alert>
+      <section v-if="evoChain.length">
         <h3 class="mb-4">
           Evolution Chain
         </h3>
         <b-row no-gutters class="mb-5" align-h="center">
           <b-col v-for="(chain, i) in evoChain" :key="i" cols="12" sm="4">
             <router-link :to="`/pokemon/${chain.id}`">
-              <b-img 
-                :src="chain.image" 
-                rounded="circle" 
+              <b-img
+                :src="chain.image"
+                rounded="circle"
                 thumbnail
                 class="mb-1"
               />
@@ -112,7 +125,7 @@
 
 <script>
 
-import getPokemons from "@/services/PokemonsService.js";
+import PokemonsService from "@/services/PokemonsService.js";
 
 export default {
   components: {
@@ -128,24 +141,30 @@ export default {
     this.getPokemonData(this.$route.params.pokeId);
   },
 
+  beforeDestroy() {
+    this.requestId++;
+  },
+
   data() {
     return {
-      pokeData: [],
-      loadedDada: false,
+      pokeData: null,
+      loading: false,
+      error: "",
       evoChain: [],
-      evosImage: [],
+      evolutionLoading: false,
+      evolutionError: "",
+      requestId: 0,
     };
   },
   computed: {
     getImage() {
-      if (this.pokeData.sprites === undefined) return "";
-      return (
-        this.pokeData.sprites.other["official-artwork"].front_default ||
-        this.pokeData.sprites.front_default
-      );
+      if (!this.pokeData || !this.pokeData.sprites) return "";
+      const { other, front_default } = this.pokeData.sprites;
+      return (other && other["official-artwork"] && other["official-artwork"].front_default)
+        || front_default || "";
     },
-    getStats() {
-      return this.pokeData.stats;
+    heightInCentimeters() {
+      return this.pokeData ? this.pokeData.height * 10 : null;
     },
     getTypes() {
       return this.pokeData.types;
@@ -155,70 +174,54 @@ export default {
     },
   },
   methods: {
-    getPokemonData(pokeId) {
-      this.pokeData = [];
-      this.loadedDada = false;
+    async getPokemonData(pokeId) {
+      const requestId = ++this.requestId;
+      this.pokeData = null;
+      this.loading = true;
+      this.error = "";
       this.evoChain = [];
-      this.evosImage = [];
-
-      getPokemons
-        .getPokemonData(pokeId)
-        .then((res) => {
-          return (this.pokeData = res.data);
-        })
-        .catch(err => {
-          console.error(`Erro ao recuperar dados do pokemon ${pokeId}`, err);
-        })
-        .finally(() => {
-          this.loadedDada = true;
-          this.getEvoChainUrl(pokeId);
-        });
+      this.evolutionError = "";
+      this.evolutionLoading = false;
+      try {
+        const { data } = await PokemonsService.getPokemonData(pokeId);
+        if (requestId !== this.requestId) return;
+        this.pokeData = data;
+        this.loadEvolutionChain(requestId);
+      } catch (error) {
+        if (requestId !== this.requestId) return;
+        this.error = error.response && error.response.status === 404
+          ? "Pokémon não encontrado."
+          : "Não foi possível carregar este Pokémon.";
+      } finally {
+        if (requestId === this.requestId) this.loading = false;
+      }
     },
-    getEvoChainUrl(id) {
-      getPokemons
-        .getPokemonSpecies(id)
-        .then((res) => {
-          this.getEvoChain(res.data.evolution_chain.url);
-        })
-        .catch(err => {
-          console.error(`Erro ao recuperar URL da Evolution Chain do pokemon ${id}`, err);
-        });
-    },
-    getEvoChain(evoUrl) {
-      getPokemons
-        .getDataByUrl(evoUrl)
-        .then(async res => {
-          let evoData = res.data.chain;
-
-          do {
-            this.evoChain.push({
-              name: evoData.species.name, 
-              ...await this.getImageEvos(evoData.species.name)
-            });
-
-            evoData = evoData.evolves_to[0];
-          } while (
-            evoData != undefined &&
-            Object.prototype.hasOwnProperty.call(evoData, "evolves_to")
-          );
-        })
-        .catch(err => {
-          console.error("Erro ao recuperar evolution chain do pokemon: ", err);
-        });
-    },
-    async getImageEvos(evoName) {
-      return await getPokemons
-        .getPokemonData(evoName)
-        .then((res) => {
-          return {
-            image: res.data.sprites.front_default,
-            id: res.data.id
-          };
-        })
-        .catch(err => {
-          console.error(`Erro ao recuperar a imagem do pokemon ${evoName}`,err);
-          return null;
-        })
+    async loadEvolutionChain(requestId = this.requestId) {
+      this.evolutionLoading = true;
+      this.evolutionError = "";
+      try {
+        const { data: species } = await PokemonsService.getDataByUrl(this.pokeData.species.url);
+        if (requestId !== this.requestId || !species.evolution_chain) return;
+        const { data } = await PokemonsService.getDataByUrl(species.evolution_chain.url);
+        if (requestId !== this.requestId) return;
+        const names = [];
+        const visit = node => {
+          names.push(node.species.name);
+          node.evolves_to.forEach(visit);
+        };
+        visit(data.chain);
+        const evolutions = await Promise.all(names.map(async name => {
+          const { data: pokemon } = await PokemonsService.getPokemonData(name);
+          return { name, id: pokemon.id, image: pokemon.sprites.front_default };
+        }));
+        if (requestId === this.requestId) this.evoChain = evolutions;
+      } catch (error) {
+        if (requestId === this.requestId) {
+          this.evolutionError = "Não foi possível carregar as evoluções.";
+        }
+      } finally {
+        if (requestId === this.requestId) this.evolutionLoading = false;
+      }
     },
   },
 };

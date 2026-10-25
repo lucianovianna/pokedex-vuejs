@@ -9,10 +9,10 @@
             </b-input-group-text>
           </template>
 
-          <b-input 
+          <b-input
             v-model="busca"
             placeholder="Pesquisar Pokemons"
-            type="text" 
+            type="text"
             style="outline: none; box-shadow: none;"
           />
         </b-input-group>
@@ -25,9 +25,9 @@
             </b-input-group-text>
           </template>
 
-          <b-form-select 
-            v-model="ordenacao" 
-            :options="ordanacaoOptions" 
+          <b-form-select
+            v-model="ordenacao"
+            :options="sortOptions"
             style="outline: none; box-shadow: none;"
           />
         </b-input-group>
@@ -39,8 +39,14 @@
       <b-spinner class="mx-auto" />
     </div>
 
+    <b-alert v-else-if="error" show variant="danger">
+      {{ error }}
+      <b-button variant="outline-danger" @click="getPokemonsList">Tentar novamente</b-button>
+    </b-alert>
+
     <div v-else>
-      <body-lista-pokemons :pokemons="pokemonsPorPagina" />
+      <p v-if="!pokemonsFiltrados.length" role="status">Nenhum Pokémon encontrado.</p>
+      <body-lista-pokemons :pokemons="pokemonsPorPagina" @retry="loadPokemon" />
       <b-pagination
         class="mt-3"
         v-model="currentPage"
@@ -72,12 +78,13 @@ export default {
     return {
       pokemonsList: [],
       loading: false,
+      error: "",
       busca: "",
-      ordenacao: { 
-        campo: "id", 
-        ordem: "asc" 
+      ordenacao: {
+        campo: "id",
+        ordem: "asc"
       },
-      ordanacaoOptions: [
+      sortOptions: [
         { value: { campo: "id", ordem: "asc" }, text: 'Crescente por ID' },
         { value: { campo: "id", ordem: "desc" }, text: 'Decrescente por ID' },
         { value: { campo: "name", ordem: "asc" }, text: 'Nome A-Z' },
@@ -90,18 +97,12 @@ export default {
 
   computed: {
     pokemonsOrdenados() {
-      const campo = this.ordenacao.campo;
-      const ordem = this.ordenacao.ordem; 
-      let orderedPokemonsList = JSON.parse(JSON.stringify(this.pokemonsList));
-
-      const operation = {
-        "desc": (a, b) => a < b,
-        "asc": (a, b) => a > b
-      };
-
-      orderedPokemonsList.sort((a, b) => operation[ordem](a[campo], b[campo]) ? 1 : -1);
-
-      return orderedPokemonsList;
+      const { campo, ordem } = this.ordenacao;
+      const direction = ordem === "asc" ? 1 : -1;
+      return [...this.pokemonsList].sort((a, b) => {
+        if (a[campo] === b[campo]) return 0;
+        return (a[campo] > b[campo] ? 1 : -1) * direction;
+      });
     },
     pokemonsFiltrados() {
       return this.pokemonsOrdenados.filter(
@@ -114,76 +115,62 @@ export default {
         this.currentPage * this.perPage
       );
     },
-    buscaCurrentPageOrdenacao() {
-      return `${this.busca}|${this.currentPage}|${JSON.stringify(this.ordenacao)}`;
-    },
   },
 
   watch: {
-    buscaCurrentPageOrdenacao() {
+    pokemonsPorPagina() {
       this.setPokemonsData();
     },
     busca() {
       this.currentPage = 1;
     },
+    ordenacao() {
+      this.currentPage = 1;
+    },
   },
 
   methods: {
-    getPokemonsList() {
+    async getPokemonsList() {
       this.loading = true;
-
-      PokemonsService.getPokemonsList()
-        .then(res => {
-          let pokemons = [];
-          res.data.results.forEach(poke => {
-            pokemons.push({
-              ...poke,
-              id: Number(poke.url.slice(34).slice(0, -1)),
-              image: null,
-              types: null
-            });
-          });
-
-          this.pokemonsList = pokemons;
-
-          this.setPokemonsData();
-        })
-        .catch(err => {
-          console.error(err);
-        })
-        .finally(() => {
-          this.loading = false;
-        });
+      this.error = "";
+      try {
+        const { data } = await PokemonsService.getPokemonsList();
+        this.pokemonsList = data.results.map(poke => ({
+          ...poke,
+          id: Number(poke.url.split("/").filter(Boolean).pop()),
+          image: null,
+          types: [],
+          loading: false,
+          error: false,
+          dataLoaded: false,
+        }));
+        this.setPokemonsData();
+      } catch (error) {
+        this.error = "Não foi possível carregar os Pokémon.";
+      } finally {
+        this.loading = false;
+      }
     },
     setPokemonsData() {
-      const idList = this.pokemonsPorPagina.map(poke => poke.id);
-
-      idList.forEach(id => {
-        let pokeIdx = this.pokemonsList.findIndex(poke => poke.id == id);
-
-        if (
-          pokeIdx != -1 &&
-          (this.pokemonsList[pokeIdx].image == null ||
-            this.pokemonsList[pokeIdx].types == null)
-        ) {
-          PokemonsService.getDataByUrl(this.pokemonsList[pokeIdx].url)
-            .then(res => {
-              let pokeData = res.data;
-              this.pokemonsList[pokeIdx].image = pokeData.sprites.front_default;
-              this.pokemonsList[pokeIdx].types = pokeData.types;
-            }).catch(err => {
-              console.error(`Erro ao recuperar dados do pokemon ${id}: `, err);
-            });
-        }
+      this.pokemonsPorPagina.forEach(poke => {
+        if (!poke.dataLoaded && !poke.loading && !poke.error) this.loadPokemon(poke);
       });
     },
-    setOrdenacao(ordenacao) {
-      this.ordenacao = ordenacao;
-      this.currentPage = 1;
-    }
+    async loadPokemon(poke) {
+      if (poke.loading) return;
+      poke.loading = true;
+      poke.error = false;
+      try {
+        const { data } = await PokemonsService.getDataByUrl(poke.url);
+        poke.image = data.sprites.front_default;
+        poke.types = data.types;
+        poke.dataLoaded = true;
+      } catch (error) {
+        poke.error = true;
+      } finally {
+        poke.loading = false;
+      }
+    },
   },
 };
 </script>
-
-
-<style></style>
