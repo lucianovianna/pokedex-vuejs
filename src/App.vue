@@ -34,7 +34,4 @@ export default {
   color: var(--default);
 }
 
-a {
-  color: var(--primary) !important;
-}
 </style>
