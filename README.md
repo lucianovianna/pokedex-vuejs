@@ -32,8 +32,8 @@ O projeto foi executado com Node.js 16. Se você usa nvm, selecione essa versão
 antes de instalar as dependências:
 
 ```bash
-nvm install 16
-nvm use 16
+nvm install
+nvm use
 ```
 
 Instale as dependências a partir do lockfile:
