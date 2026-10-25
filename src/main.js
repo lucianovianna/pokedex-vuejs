@@ -2,13 +2,21 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
 
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue';
+import {
+  BAlert, BButton, BCard, BCardBody, BCardImg, BCol, BFormInput, BFormSelect,
+  BImg, BInputGroup, BInputGroupText, BNavbar, BNavbarBrand, BOverlay,
+  BPagination, BRow, BSpinner, BIconSearch, BIconFilter, BIconLinkedin,
+  BIconGithub, VBTooltip,
+} from 'bootstrap-vue';
 import './scss/override.scss';
 
-// Make BootstrapVue available throughout your project
-Vue.use(BootstrapVue);
-// Optionally install the BootstrapVue icon components plugin
-Vue.use(IconsPlugin);
+const components = {
+  BAlert, BButton, BCard, BCardBody, BCardImg, BCol, BFormInput, BFormSelect,
+  BImg, BInputGroup, BInputGroupText, BNavbar, BNavbarBrand, BOverlay,
+  BPagination, BRow, BSpinner, BIconSearch, BIconFilter, BIconLinkedin, BIconGithub,
+};
+Object.entries(components).forEach(([name, component]) => Vue.component(name, component));
+Vue.directive('b-tooltip', VBTooltip);
 
 Vue.config.productionTip = false;
 

@@ -9,7 +9,7 @@
             </b-input-group-text>
           </template>
 
-          <b-input
+          <b-form-input
             v-model="busca"
             placeholder="Pesquisar Pokémon"
             aria-label="Pesquisar Pokémon"
