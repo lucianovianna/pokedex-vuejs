@@ -1,20 +1,18 @@
 <template>
   <footer id="footer" class="mt-5">
-    <span>Criado por <strong>Luciano Vianna</strong></span>
+    <div class="container footer-content">
+      <span>Criado por <strong>Luciano Vianna</strong></span>
 
-    <span>
+      <nav class="social-links" aria-label="Redes sociais">
         <a href="https://www.linkedin.com/in/lucianocvn/" aria-label="LinkedIn de Luciano Vianna (abre em nova aba)" target="_blank" rel="noopener noreferrer">
-            <b-icon-linkedin style="color: var(--default);"/>
+          <b-icon-linkedin />
         </a>
-    </span>
-
-    <span>
         <a href="https://github.com/lucianovianna" aria-label="GitHub de Luciano Vianna (abre em nova aba)" target="_blank" rel="noopener noreferrer">
-            <b-icon-github style="color: var(--default);"/>
+          <b-icon-github />
         </a>
-    </span>
-
-    <div class="bar" />
+      </nav>
+    </div>
+    <div class="bar" aria-hidden="true" />
   </footer>
 </template>
 
@@ -25,15 +23,31 @@ export default {
 </script>
 
 <style scoped>
-  .bar {
-    height: 10px;
-    width: 100%;
+.footer-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px 15px;
+}
 
-    background-color: var(--primary);
-  }
+.social-links {
+  display: flex;
+  gap: 12px;
+}
 
-  #footer span {
-      padding: 0px 6px;
-      margin-bottom: 6px;
-  }
+.social-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  min-height: 24px;
+  color: var(--default);
+}
+
+.bar {
+  height: 4px;
+  background-color: var(--primary);
+}
 </style>

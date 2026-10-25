@@ -27,6 +27,10 @@ export default {
 
 
 #app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -34,4 +38,7 @@ export default {
   color: var(--default);
 }
 
+#app > main {
+  flex: 1;
+}
 </style>
