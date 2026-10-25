@@ -1,11 +1,11 @@
 <script>
-import { PolarArea, mixins } from "vue-chartjs";
-const { reactiveProp } = mixins;
+import { PolarArea } from "vue-chartjs";
 
 export default {
   extends: PolarArea,
-  mixins: [reactiveProp],
-  props: ["chartData"],
+  props: {
+    chartData: { type: Array, required: true },
+  },
 
   created() {
     this.setData();
@@ -17,12 +17,12 @@ export default {
     return {
       data: {
         labels: [
-          "Hp",
-          "Attack",
-          "Defense",
-          "Special Attack",
-          "Special Defense",
-          "Speed",
+          "HP",
+          "Ataque",
+          "Defesa",
+          "Ataque especial",
+          "Defesa especial",
+          "Velocidade",
         ],
         datasets: [
           {
@@ -46,15 +46,8 @@ export default {
   },
   methods: {
     setData() {
-      if (this.chartData != undefined) {
-        for (let i = 0; i < 6; i++) {
-          this.data.datasets[0].data.push(this.chartData[`${i}`].base_stat);
-        }
-      }
+      this.data.datasets[0].data = this.chartData.map(stat => stat.base_stat);
     },
   },
 };
 </script>
-
-<style>
-</style>

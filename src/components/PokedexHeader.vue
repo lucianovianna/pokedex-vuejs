@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <header>
     <div class="bar" />
 
     <b-navbar variant="faded" type="light"  class="container mb-4">
-      <b-navbar-brand href="/">
+      <b-navbar-brand :to="{ name: 'Home' }">
         <b-img
           src="pokeball-icon.png"
           class="d-inline-block align-top"
@@ -13,7 +13,7 @@
         Pokédex
       </b-navbar-brand>
     </b-navbar>
-  </div>
+  </header>
 </template>
 
 <script>

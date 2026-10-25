@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <pokedex-header />
-    <router-view class="container" />
+    <main class="container">
+      <router-view />
+    </main>
     <pokedex-footer />
   </div>
 </template>
@@ -21,14 +23,6 @@ export default {
   --default: #2c3e52;
 }
 
-
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: var(--default);
-}
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

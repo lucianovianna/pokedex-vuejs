@@ -9,7 +9,7 @@
       <b-card
         no-body
         class="mb-5"
-        style="width: 250px;"
+        style="width: 100%; max-width: 250px;"
         align="center"
       >
         <b-overlay
@@ -22,6 +22,7 @@
               <b-img
                 v-if="poke.image"
                 :src="poke.image"
+                :alt="poke.name | kebabCaseToTitleCase"
                 rounded="circle"
                 class="my-3"
                 thumbnail
@@ -63,6 +64,3 @@ export default {
   }
 };
 </script>
-
-<style>
-</style>

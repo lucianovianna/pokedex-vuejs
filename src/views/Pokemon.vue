@@ -3,14 +3,18 @@
     :show="loading"
     rounded="circle"
     variant="white"
+    class="pokemon-details"
   >
+    <template #overlay>
+      <b-spinner label="Carregando Pokémon" />
+    </template>
     <b-alert v-if="error" show variant="danger">
       {{ error }}
       <b-button variant="outline-danger" @click="getPokemonData($route.params.pokeId)">
         Tentar novamente
       </b-button>
     </b-alert>
-    <div v-if="pokeData" class="container">
+    <div v-if="pokeData">
       <b-row class="mt-3" tag="section">
         <b-col>
           <h1>
@@ -42,7 +46,7 @@
               <b-card-body
                 v-if="pokeData.stats && pokeData.stats.length"
                 class="border-left"
-                title="Status"
+                title="Atributos"
               >
                 <div>
                   <b-row>
@@ -59,8 +63,8 @@
 
       <section class="pokeInfo">
         <b-row class="labelPokeInfo">
-          <b-col>Height</b-col>
-          <b-col>Weight</b-col>
+          <b-col>Altura</b-col>
+          <b-col>Peso</b-col>
         </b-row>
         <b-row class="dataPokeInfo">
           <b-col>{{ heightInCentimeters }} cm</b-col>
@@ -68,13 +72,13 @@
         </b-row>
 
         <b-row class="labelPokeInfo">
-          <b-col class="mt-2">Type</b-col>
+          <b-col class="mt-2">Tipos</b-col>
         </b-row>
         <b-row class="dataPokeInfo" align-h="center">
           <b-col
-            v-for="(type, i) in getTypes"
+            v-for="type in pokeData.types"
             cols="auto"
-            :key="i"
+            :key="type.slot"
             class="mx-2 my-4 px-2 py-1 border"
           >
             {{ type.type.name | kebabCaseToTitleCase }}
@@ -82,13 +86,13 @@
         </b-row>
 
         <b-row>
-          <b-col class="labelPokeInfo">Abilities</b-col>
+          <b-col class="labelPokeInfo">Habilidades</b-col>
         </b-row>
         <b-row align-h="center">
           <b-col
-            v-for="(ability, i) in getAbilities"
+            v-for="ability in pokeData.abilities"
             cols="auto"
-            :key="i"
+            :key="ability.ability.name"
             class="mx-2 my-4 px-auto py-1 border"
           >
             {{ ability.ability.name | kebabCaseToTitleCase }}
@@ -102,18 +106,21 @@
         <b-button variant="outline-secondary" @click="loadEvolutionChain()">Tentar novamente</b-button>
       </b-alert>
       <section v-if="evoChain.length">
-        <h3 class="mb-4">
-          Evolution Chain
-        </h3>
+        <h2 class="mb-4">
+          Cadeia de evolução
+        </h2>
         <b-row no-gutters class="mb-5" align-h="center">
-          <b-col v-for="(chain, i) in evoChain" :key="i" cols="12" sm="4">
+          <b-col v-for="chain in evoChain" :key="chain.id" cols="12" sm="4">
             <router-link :to="`/pokemon/${chain.id}`">
               <b-img
+                v-if="chain.image"
                 :src="chain.image"
+                :alt="chain.name | kebabCaseToTitleCase"
                 rounded="circle"
                 thumbnail
                 class="mb-1"
               />
+              <p v-else>Imagem indisponível</p>
               <p> {{ chain.name | kebabCaseToTitleCase }} </p>
             </router-link>
           </b-col>
@@ -165,12 +172,6 @@ export default {
     },
     heightInCentimeters() {
       return this.pokeData ? this.pokeData.height * 10 : null;
-    },
-    getTypes() {
-      return this.pokeData.types;
-    },
-    getAbilities() {
-      return this.pokeData.abilities;
     },
   },
   methods: {
@@ -227,9 +228,13 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.pokemon-details {
+  min-height: 150px;
+}
+
 .pokeInfo {
-  margin: 3em;
+  margin: 3em 0;
 }
 
 .labelPokeInfo {

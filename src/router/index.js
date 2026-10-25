@@ -9,13 +9,12 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home,
-    meta: { title: "Pokedex" }
+    meta: { title: "Pokédex" }
   },
   {
     path: '/pokemon/:pokeId',
     name: 'Pokemon',
-    meta: { title: "Visualizar Pokemon" },
-    props: true,
+    meta: { title: "Detalhes do Pokémon" },
     component: () => import('../views/Pokemon.vue')
   }
 ]
@@ -27,7 +26,7 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   const nearestWithTitle = to.matched.slice().reverse().find(r => r.meta && r.meta.title);
 
-  document.title = nearestWithTitle.meta.title;
+  document.title = nearestWithTitle ? nearestWithTitle.meta.title : "Pokédex";
 
   next();
 });
