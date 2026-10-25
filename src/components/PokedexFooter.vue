@@ -29,7 +29,7 @@ export default {
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 20px 15px;
+  padding: 10px 15px;
 }
 
 .social-links {
