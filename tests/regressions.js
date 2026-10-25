@@ -25,11 +25,12 @@ function loadModule(file, mocks) {
   return exports.default;
 }
 
-function createComponent(file, service, query = {}) {
+function createComponent(file, service, query = {}, propsData = {}) {
   const component = loadModule(file, { '@/services/PokemonsService.js': service });
   const route = Vue.observable({ name: 'Home', query });
   return new Vue({
     ...component,
+    propsData,
     created: undefined,
     beforeCreate() {
       this.$route = route;
@@ -323,6 +324,18 @@ test('failed API requests are not cached and different list pages stay separate'
   await service.getPokemonsList(15, 15);
   await service.getPokemonsList(30, 0);
   assert.equal(calls, 4);
+});
+
+test('attribute bars label stats by name, preserve zero and fit the largest value', () => {
+  const view = createComponent('src/components/Chart.vue', {}, {}, { chartData: [
+    { stat: { name: 'speed' }, base_stat: 0 },
+    { stat: { name: 'hp' }, base_stat: 150 },
+    { stat: { name: 'attack' }, base_stat: 60 },
+  ] });
+  assert.equal(view.stats.map(stat => stat.label).join(','), 'Velocidade,HP,Ataque');
+  assert.equal(view.stats[0].value, 0);
+  assert.ok(view.maxStat >= 150);
+  view.$destroy();
 });
 
 (async () => {

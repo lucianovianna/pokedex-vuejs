@@ -14,14 +14,14 @@ código para fazer pequenas melhorias, mantendo a essência do projeto original.
 - Listagem paginada com imagens e tipos.
 - Filtros na URL e preservação da listagem ao voltar dos detalhes.
 - Página de detalhes com altura, peso, tipos e habilidades.
-- Gráfico de atributos e navegação entre Pokémon da cadeia de evolução.
+- Atributos em barras horizontais com valores em texto.
+- Navegação entre Pokémon da cadeia de evolução.
 
 ## Tecnologias
 
 - Vue.js 2 e Vue Router 3.
 - Axios para as requisições à PokéAPI.
 - Bootstrap 4, BootstrapVue e SCSS para a interface.
-- Chart.js 2 e vue-chartjs 3 para o gráfico.
 - Vue CLI 4 para desenvolvimento e build.
 
 ## Como executar

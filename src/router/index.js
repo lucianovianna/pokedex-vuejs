@@ -16,6 +16,12 @@ const routes = [
     name: 'Pokemon',
     meta: { title: "Detalhes do Pokémon" },
     component: () => import('../views/Pokemon.vue')
+  },
+  {
+    path: '*',
+    name: 'NotFound',
+    meta: { title: 'Página não encontrada | Pokédex' },
+    component: () => import('../views/NotFound.vue')
   }
 ]
 
