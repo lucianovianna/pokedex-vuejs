@@ -221,6 +221,30 @@ test('all evolution branches are loaded using the Pokemon species URL', async ()
   view.$destroy();
 });
 
+test('partial evolution failures preserve successful branches and retry restores the chain', async () => {
+  let fail = true;
+  const leaf = name => ({ species: { name }, evolves_to: [] });
+  const chain = { ...leaf('root'), evolves_to: [leaf('branch-a'), leaf('branch-b')] };
+  const view = detail({
+    getDataByUrl: async url => ({ data: url === 'species/1'
+      ? { evolution_chain: { url: 'chain' } } : { chain } }),
+    getPokemonData: async name => {
+      if (fail && name === 'branch-a') throw new Error('Offline');
+      return { data: { ...pokemon(name), name } };
+    },
+  });
+  view.pokeData = pokemon(1);
+  await view.loadEvolutionChain();
+  assert.equal(view.evoChain.map(p => p.name).join(','), 'root,branch-b');
+  assert.ok(view.evolutionError);
+  assert.equal(view.evolutionLoading, false);
+  fail = false;
+  await view.loadEvolutionChain();
+  assert.equal(view.evoChain.map(p => p.name).join(','), 'root,branch-a,branch-b');
+  assert.equal(view.evolutionError, '');
+  view.$destroy();
+});
+
 test('evolution failures preserve details and can be retried', async () => {
   let fail = true;
   const view = detail({ getDataByUrl: async () => {

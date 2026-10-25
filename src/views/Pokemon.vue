@@ -211,11 +211,19 @@ export default {
           node.evolves_to.forEach(visit);
         };
         visit(data.chain);
-        const evolutions = await Promise.all(names.map(async name => {
+        const results = await Promise.allSettled(names.map(async name => {
           const { data: pokemon } = await PokemonsService.getPokemonData(name);
           return { name, id: pokemon.id, image: pokemon.sprites.front_default };
         }));
-        if (requestId === this.requestId) this.evoChain = evolutions;
+        if (requestId !== this.requestId) return;
+        this.evoChain = results
+          .filter(result => result.status === 'fulfilled')
+          .map(result => result.value);
+        if (this.evoChain.length < names.length) {
+          this.evolutionError = this.evoChain.length
+            ? "Algumas evoluções não puderam ser carregadas."
+            : "Não foi possível carregar as evoluções.";
+        }
       } catch (error) {
         if (requestId === this.requestId) {
           this.evolutionError = "Não foi possível carregar as evoluções.";
