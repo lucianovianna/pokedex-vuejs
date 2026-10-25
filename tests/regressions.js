@@ -6,10 +6,11 @@ const { transformSync } = require('@babel/core');
 const { parseComponent } = require('vue-template-compiler');
 const Vue = require('vue');
 
-// Reuse the project's compiler and Babel to test Options API components in Node.
-function createComponent(file, service) {
+// Reuse the project's compiler and Babel to test modules and Options API components.
+function loadModule(file, mocks) {
   const source = fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
-  const { code } = transformSync(parseComponent(source).script.content, {
+  const script = file.endsWith('.vue') ? parseComponent(source).script.content : source;
+  const { code } = transformSync(script, {
     babelrc: false,
     configFile: false,
     plugins: ['@babel/plugin-transform-modules-commonjs'],
@@ -17,10 +18,27 @@ function createComponent(file, service) {
   const exports = {};
   vm.runInNewContext(code, {
     exports,
-    require: () => ({ __esModule: true, default: service }),
+    require: name => ({ __esModule: true, default: mocks[name] }),
     console,
+    URL,
   });
-  return new Vue({ ...exports.default, created: undefined });
+  return exports.default;
+}
+
+function createComponent(file, service, query = {}) {
+  const component = loadModule(file, { '@/services/PokemonsService.js': service });
+  const route = Vue.observable({ name: 'Home', query });
+  return new Vue({
+    ...component,
+    created: undefined,
+    beforeCreate() {
+      this.$route = route;
+      this.$router = { replace: ({ query }) => {
+        route.query = query;
+        return Promise.resolve();
+      } };
+    },
+  });
 }
 
 const tests = [];
@@ -36,7 +54,7 @@ const pokemon = id => ({
   species: { url: `species/${id}` },
   sprites: { front_default: null }, types: [], abilities: [], stats: [],
 });
-const list = service => createComponent('src/components/ListarPokemons.vue', service);
+const list = (service, query) => createComponent('src/components/ListarPokemons.vue', service, query);
 const detail = service => createComponent('src/views/Pokemon.vue', service);
 
 test('list failure ends loading and a retry restores results', async () => {
@@ -235,6 +253,34 @@ test('late evolution responses cannot populate another Pokemon page', async () =
   pending.resolve({ data: { chain: { species: { name: 'old' }, evolves_to: [] } } });
   await request;
   assert.equal(view.evoChain.length, 0);
+  view.$destroy();
+});
+
+test('listing restores shareable search, sorting and page from the URL', async () => {
+  const view = list({}, { q: 'POKEMON', sort: 'name-desc', page: '2' });
+  view.pokemonsList = [1, 2, 3].map(id => ({ id, name: `pokemon-${id}`, dataLoaded: true }));
+  view.perPage = 1;
+  await Vue.nextTick();
+  assert.equal(view.busca, 'POKEMON');
+  assert.equal(view.ordenacao.campo, 'name');
+  assert.equal(view.ordenacao.ordem, 'desc');
+  assert.equal(view.currentPage, 2);
+  assert.equal(view.pokemonsPorPagina[0].id, 2);
+  view.busca = 'pokemon-1';
+  assert.equal(view.$route.query.q, 'pokemon-1');
+  assert.equal(view.currentPage, 1);
+  view.$destroy();
+});
+
+test('invalid URL filters use safe defaults and pages stay within the results', () => {
+  const view = list({}, { q: ['invalid'], sort: 'unknown', page: '-2' });
+  assert.equal(view.busca, '');
+  assert.equal(view.ordenacao.campo, 'id');
+  assert.equal(view.ordenacao.ordem, 'asc');
+  assert.equal(view.currentPage, 1);
+  view.pokemonsList = [{ id: 1, name: 'bulbasaur', dataLoaded: true }];
+  view.$route.query = { page: '9999' };
+  assert.equal(view.currentPage, 1);
   view.$destroy();
 });
 

@@ -86,23 +86,52 @@ export default {
       pokemonsList: [],
       loading: false,
       error: "",
-      busca: "",
-      ordenacao: {
-        campo: "id",
-        ordem: "asc"
-      },
+      savedQuery: this.$route.query,
       sortOptions: [
         { value: { campo: "id", ordem: "asc" }, text: 'Crescente por ID' },
         { value: { campo: "id", ordem: "desc" }, text: 'Decrescente por ID' },
         { value: { campo: "name", ordem: "asc" }, text: 'Nome A-Z' },
         { value: { campo: "name", ordem: "desc" }, text: 'Nome Z-A' }
       ],
-      currentPage: 1,
       perPage: 15,
     };
   },
 
   computed: {
+    listQuery() {
+      return this.$route.name === 'Home' ? this.$route.query : this.savedQuery;
+    },
+    busca: {
+      get() {
+        return typeof this.listQuery.q === 'string' ? this.listQuery.q : '';
+      },
+      set(value) {
+        this.updateQuery({ q: value || undefined, page: undefined });
+      },
+    },
+    ordenacao: {
+      get() {
+        const option = this.sortOptions.find(({ value }) =>
+          `${value.campo}-${value.ordem}` === this.listQuery.sort);
+        return (option || this.sortOptions[0]).value;
+      },
+      set(value) {
+        const sort = `${value.campo}-${value.ordem}`;
+        this.updateQuery({ sort: sort === 'id-asc' ? undefined : sort, page: undefined });
+      },
+    },
+    currentPage: {
+      get() {
+        const page = Number(this.listQuery.page);
+        const validPage = Number.isSafeInteger(page) && page > 0 ? page : 1;
+        if (!this.pokemonsList.length) return validPage;
+        const lastPage = Math.max(1, Math.ceil(this.pokemonsFiltrados.length / this.perPage));
+        return Math.min(validPage, lastPage);
+      },
+      set(value) {
+        this.updateQuery({ page: value > 1 ? String(value) : undefined });
+      },
+    },
     pokemonsOrdenados() {
       const { campo, ordem } = this.ordenacao;
       const direction = ordem === "asc" ? 1 : -1;
@@ -128,15 +157,21 @@ export default {
     pokemonsPorPagina() {
       this.setPokemonsData();
     },
-    busca() {
-      this.currentPage = 1;
-    },
-    ordenacao() {
-      this.currentPage = 1;
+    listQuery(query) {
+      this.savedQuery = query;
     },
   },
 
   methods: {
+    updateQuery(changes) {
+      const query = { ...this.listQuery, ...changes };
+      Object.keys(query).forEach(key => {
+        if (query[key] === undefined) delete query[key];
+      });
+      this.$router.replace({ query }).catch(error => {
+        if (error.name !== 'NavigationDuplicated') console.error(error);
+      });
+    },
     async getPokemonsList() {
       this.loading = true;
       this.error = "";

@@ -2,7 +2,9 @@
   <div id="app">
     <pokedex-header />
     <main class="container">
-      <router-view />
+      <keep-alive include="Home">
+        <router-view />
+      </keep-alive>
     </main>
     <pokedex-footer />
   </div>

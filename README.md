@@ -12,6 +12,7 @@ código para fazer pequenas melhorias, mantendo a essência do projeto original.
 - Busca de Pokémon por nome.
 - Ordenação por ID ou nome, em ordem crescente ou decrescente.
 - Listagem paginada com imagens e tipos.
+- Filtros na URL e preservação da listagem ao voltar dos detalhes.
 - Página de detalhes com altura, peso, tipos e habilidades.
 - Gráfico de atributos e navegação entre Pokémon da cadeia de evolução.
 
