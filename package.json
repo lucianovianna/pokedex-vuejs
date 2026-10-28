@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "test": "node tests/regressions.js",
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "serve": "vite",
+    "build": "vite build",
+    "lint": "eslint . --ext .js,.vue,.mjs",
+    "preview": "vite preview"
   },
   "dependencies": {
     "axios": "^0.21.1",
@@ -20,15 +21,12 @@
   "devDependencies": {
     "@babel/core": "7.12.17",
     "@babel/plugin-transform-modules-commonjs": "7.12.13",
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
-    "@vue/cli-plugin-router": "^4.5.11",
-    "@vue/cli-service": "~4.5.0",
+    "@vitejs/plugin-vue2": "2.3.3",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "node-sass": "^6.0.1",
-    "sass-loader": "^10.2.1",
+    "sass": "1.77.8",
+    "vite": "4.5.14",
     "vue-template-compiler": "2.7.16"
   },
   "eslintConfig": {
@@ -49,5 +47,8 @@
     "> 1%",
     "last 2 versions",
     "not dead"
+  ],
+  "eslintIgnore": [
+    "dist/"
   ]
 }

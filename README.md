@@ -22,7 +22,7 @@ código para fazer pequenas melhorias, mantendo a essência do projeto original.
 - Vue.js 2.7 e Vue Router 3.
 - Axios para as requisições à PokéAPI.
 - Bootstrap 4, BootstrapVue e SCSS para a interface.
-- Vue CLI 4 para desenvolvimento e build.
+- Vite 4 para desenvolvimento e build, com suporte ao Node.js 16.
 
 ## Como executar
 
@@ -55,13 +55,19 @@ Para gerar a versão de produção na pasta `dist/`:
 npm run build
 ```
 
+Para conferir o build localmente, abra o endereço exibido por:
+
+```bash
+npm run preview
+```
+
 Para verificar o código sem aplicar correções automáticas:
 
 ```bash
 npm run lint -- --no-fix
 ```
 
-O comando `npm run lint`, sem `--no-fix`, também aplica correções automáticas.
+O lint não aplica correções automáticas. Para aplicá-las, use `npm run lint -- --fix`.
 Para executar os testes de regressão de busca, ordenação, paginação, dados e
 falhas da API, sem consultar a PokéAPI ao vivo:
 
@@ -69,7 +75,7 @@ falhas da API, sem consultar a PokéAPI ao vivo:
 npm test
 ```
 
-Os testes usam o Node.js e as ferramentas de compilação já incluídas no projeto.
+Os testes usam o Node.js, Babel e o compilador do Vue, declarados no projeto.
 O [workflow de CI](.github/workflows/ci.yml) executa instalação, testes, lint e
 build em pull requests e pushes na branch `main`, usando o Node da `.nvmrc`.
 
