@@ -19,7 +19,7 @@ código para fazer pequenas melhorias, mantendo a essência do projeto original.
 
 ## Tecnologias
 
-- Vue.js 2 e Vue Router 3.
+- Vue.js 2.7 e Vue Router 3.
 - Axios para as requisições à PokéAPI.
 - Bootstrap 4, BootstrapVue e SCSS para a interface.
 - Vue CLI 4 para desenvolvimento e build.
