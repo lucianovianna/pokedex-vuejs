@@ -21,8 +21,11 @@ código para fazer pequenas melhorias, mantendo a essência do projeto original.
 
 - Vue.js 2.7 e Vue Router 3.
 - Axios para as requisições à PokéAPI.
-- Bootstrap 4, BootstrapVue e SCSS para a interface.
+- Bootstrap 4.6.2, BootstrapVue e SCSS para a interface.
 - Vite 4 para desenvolvimento e build, com suporte ao Node.js 16.
+
+O Sass usa `quietDeps` para silenciar avisos de depreciação das dependências.
+Avisos do SCSS do projeto continuam visíveis.
 
 ## Como executar
 
