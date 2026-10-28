@@ -3,8 +3,8 @@ $primary: #C00;
 $secondary: #CCCA14;
 
 // Import Bootstrap and BootstrapVue source SCSS files
-@import '~bootstrap/scss/bootstrap.scss';
-@import '~bootstrap-vue/src/index.scss';
+@import 'bootstrap/scss/bootstrap.scss';
+@import 'bootstrap-vue/src/index.scss';
 
 // Define general style overrides and custom classes
 // ...
