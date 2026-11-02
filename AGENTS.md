@@ -1,7 +1,7 @@
 # Princípios
 
 - Seguir YAGNI e KISS no código e na comunicação.
-- Preservar a essência do desafio de júnior: mudanças pequenas, sem migrações ou abstrações fora do escopo.
+- Preservar a essência do desafio feito durante o estágio: mudanças pequenas, sem migrações ou abstrações fora do escopo.
 - Manter baixo acoplamento e alta coesão na estrutura existente.
 - Escrever novos identificadores e comentários em inglês; comunicar e documentar em português.
 - Responder de forma curta e direta.

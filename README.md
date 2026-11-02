@@ -4,7 +4,7 @@ Uma Pokédex feita com Vue.js e dados da [PokéAPI](https://pokeapi.co/), com bu
 ordenação, paginação e uma página de detalhes de cada Pokémon.
 
 Criei este projeto há alguns anos, durante um desafio técnico na empresa em que
-trabalho, quando ainda era dev júnior. Hoje sou dev sênior e estou revisitando o
+trabalho, quando ainda era estagiário. Hoje sou dev sênior e estou revisitando o
 código para fazer pequenas melhorias, mantendo a essência do projeto original.
 
 ## Funcionalidades
